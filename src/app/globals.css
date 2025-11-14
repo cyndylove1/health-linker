@@ -1,0 +1,91 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Primary Colors from Figma */
+  --primary-1200: #1c9d75;
+  --primary-100: #ecf6f3;
+  --primary-dark: #0a3729;
+  
+  /* Black & White variations */
+  --black-white-100: #ffffff;
+  --black-white-200: #e7e7e7;
+  --black-white-800: #5c5c5c;
+  --black-white-900: #454545;
+  --black-white-1000: #2e2e2e;
+  --black-white-1100: #171717;
+  
+  /* Secondary Colors */
+  --secondary-1200: #040c55;
+  --secondary-100: #f5f5f5;
+  --secondary-200: #f0effb;
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(180deg, #1c9d75 0%, #0a3729 100%);
+  --gradient-white: linear-gradient(180deg, #ffffff00 0%, #ffffff 100%);
+  
+  /* Typography */
+  --font-family: "DM Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+  
+  /* Container */
+  --container-max-width: 1440px;
+  --container-padding: 80px;
+  
+  /* Layout */
+  --header-offset: 24px;
+
+  /* Typographic scale (responsive clamp) */
+  --fs-nav: 14px;
+  --lh-nav: 20px;
+  --ls-nav: 0;
+
+  --fs-body: clamp(14px, 1.6vw, 16px);
+  --lh-body: clamp(20px, 2.2vw, 22px);
+  --ls-body: 0;
+
+  --fs-h1: clamp(56px, 6.5vw, 72px);
+  --lh-h1: clamp(64px, 7.2vw, 76px);
+  --ls-h1: -0.8px;
+
+  --fs-h2: clamp(32px, 4vw, 48px);
+  --lh-h2: clamp(40px, 4.8vw, 58px);
+  --ls-h2: -0.4px;
+
+  --fs-h3: clamp(20px, 2.4vw, 24px);
+  --lh-h3: clamp(26px, 3vw, 31px);
+  --ls-h3: 0;
+}
+
+@theme inline {
+  --color-background: var(--black-white-100);
+  --color-foreground: var(--black-white-1100);
+  --font-sans: var(--font-family);
+  
+  /* Custom colors */
+  --color-primary-1200: var(--primary-1200);
+  --color-primary-100: var(--primary-100);
+  --color-primary-dark: var(--primary-dark);
+  --color-secondary-1200: var(--secondary-1200);
+  --color-secondary-100: var(--secondary-100);
+  --color-secondary-200: var(--secondary-200);
+  
+  /* Black & White */
+  --color-black-white-100: var(--black-white-100);
+  --color-black-white-200: var(--black-white-200);
+  --color-black-white-800: var(--black-white-800);
+  --color-black-white-900: var(--black-white-900);
+  --color-black-white-1000: var(--black-white-1000);
+  --color-black-white-1100: var(--black-white-1100);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--black-white-100);
+  color: var(--black-white-1100);
+  font-family: var(--font-family);
+  margin: 0;
+  padding: 0;
+}
