@@ -1,19 +1,39 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap'); */
+
+
+.dm-font {
+  font-family: var(--font--dm-sans);
+}
+.poppins {
+  font-family: var(--font-poppins);
+}
 
 :root {
   /* Primary Colors from Figma */
-  --primary-1200: #1c9d75;
   --primary-100: #ecf6f3;
+  --primary-200: #D9EEE8;
   --primary-dark: #0a3729;
+  --primary-1200: #1c9d75;
+  --primary-1400: #56CDAD;
+  
   
   /* Black & White variations */
   --black-white-100: #ffffff;
   --black-white-200: #e7e7e7;
+  --black-white-300: #D0D0D0;
+  --black-white-400: #B9B9B9;
+  --black-white-600: #8B8B8B;
+  --black-white-700: #737373;
   --black-white-800: #5c5c5c;
   --black-white-900: #454545;
   --black-white-1000: #2e2e2e;
   --black-white-1100: #171717;
+  --black-white-1200: #0C0C0C;
+  --black-white-1700: #8B8B8B;
+
+  /* foundation Colors */
+  --foundation-grey-900:#333333
   
   /* Secondary Colors */
   --secondary-1200: #040c55;
@@ -88,4 +108,27 @@ body {
   font-family: var(--font-family);
   margin: 0;
   padding: 0;
+}
+/* Green Circle check mark */
+.check-circle {
+  width: 64px;
+  height: 64px;
+  background-color: #22C55E;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Checkmark Animation */
+.check-icon {
+  width: 32px;
+  height: 50px;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  transition: stroke-dashoffset 0.8s ease-in-out;
+}
+
+.animate-check .check-icon {
+  stroke-dashoffset: 0;
 }
