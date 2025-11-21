@@ -43,7 +43,7 @@ export default function Pagination({
   const pages = getPageNumbers();
 
   return (
-    <div className="flex items-center justify-between w-full py-6 px-4">
+    <div className="flex items-center justify-between md:flex-row flex-col w-full py-6 px-4">
       {/* Previous */}
       <button
         onClick={() => onPageChange(currentPage - 1)}
@@ -55,7 +55,7 @@ export default function Pagination({
       </button>
 
       {/* Page Numbers */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 py-2 md:py-0">
         {pages.map((page, index) =>
           page === "..." ? (
             <span key={index} className="px-2 text-gray-500">

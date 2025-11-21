@@ -50,7 +50,7 @@ export const sidebarItems: SidebarItem[] = [
   {
     id: 2,
     Label: "Explore Jobs",
-    path: "/explore",
+    path: "/explore-jobs",
     icon: (isActive) => (
       <svg
         width="20"

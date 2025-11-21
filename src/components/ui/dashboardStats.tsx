@@ -25,7 +25,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, bg }) => {
 
 export default function DashboardStats() {
   return (
-    <div className="flex gap-[20px] p-4 bg-white rounded-[16px] w-full">
+    <div className="flex lg:flex-row flex-col gap-[20px] p-4 bg-white rounded-[16px] w-full">
       <StatCard
         title="Total Jobs Applied"
         value={35}

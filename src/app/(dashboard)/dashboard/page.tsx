@@ -36,14 +36,14 @@ export default function Dashboard() {
     },
   ];
   return (
-    <div className="px-6 dm-font leading-[100%]">
+    <div className="px-4 dm-font leading-[100%]">
       <Title text="DashBoard" />
       <div>
         <DashboardStats />
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-[10px] my-4">
         {/* Left Section */}
-        <div className="col-span-2 space-y-10 bg-white p-4 rounded-[16px] border-[1px] border-[var(--black-white-200)]">
+        <div className="lg:col-span-2 col-span-1 space-y-10 bg-white p-4 rounded-[16px] border-[1px] border-[var(--black-white-200)]">
           {/* Recommended Jobs */}
           <div>
             <div className="flex justify-between items-center mb-4">
@@ -57,7 +57,13 @@ export default function Dashboard() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {jobs.map((job) => (
-                <JobCard key={job.id} job={job} />
+                <JobCard
+                  key={job.id}
+                  job={job}
+                  hideIcon={false}
+                  icon={true}
+                  hideText={true}
+                />
               ))}
             </div>
           </div>
@@ -75,7 +81,13 @@ export default function Dashboard() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {jobs.map((job) => (
-                <JobCard key={job.id} job={job} />
+                <JobCard
+                  key={job.id}
+                  job={job}
+                  hideIcon={false}
+                  icon={true}
+                  hideText={true}
+                />
               ))}
             </div>
           </div>

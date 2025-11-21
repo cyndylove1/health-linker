@@ -1,6 +1,6 @@
 import { IoSettingsOutline } from "react-icons/io5";
 import Image from "next/image";
-import profile from "../../../public/images/Mask Group.png";
+import profile from "../../../public/Mask Group.png";
 import SearchBar from "../form/searchBar";
 
 export default function Header() {

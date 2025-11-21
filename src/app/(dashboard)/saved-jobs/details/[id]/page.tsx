@@ -5,14 +5,15 @@ import { IoHeartOutline, IoShareSocialOutline } from "react-icons/io5";
 import BackButton from "@/components/button/backButton";
 import JobFilter from "@/components/ui/jobFilter";
 import JobDescription from "@/components/ui/jobDescription";
-import ShareDropdown from "@/components/ui/ShareDropDown";
+import ShareMenu from "@/components/dropDown.tsx/shareMenu";
 
-interface ExploreProps {
+interface SavedProps {
   params: { id: string };
 }
 
-export default function jobsDetails({ params }: ExploreProps) {
-  const [open, setOpen] = useState(false);
+export default function Details({ params }: SavedProps) {
+  const [OpenMenu, setOpenMenu] = useState(false);
+  const toggleMenu = () => setOpenMenu((prev) => !prev);
   return (
     <>
       <div className="px-6 dm-font leading-[100%]">
@@ -36,12 +37,15 @@ export default function jobsDetails({ params }: ExploreProps) {
               <div className="flex items-center gap-[10px]">
                 <div>
                   <button
-                    onClick={() => setOpen(!open)}
                     className="text-[20px] text-gray-800"
+                    onClick={toggleMenu}
                   >
                     <IoShareSocialOutline size={22} />
                   </button>
-                  <ShareDropdown isOpen={open} />
+                  <ShareMenu
+                    menuOpen={OpenMenu}
+                    closeMenu={() => setOpenMenu(false)}
+                  />
                 </div>
 
                 <div className="bg-[#bbbbbb] w-[25px] h-[25px] rounded-full flex items-center justify-center">

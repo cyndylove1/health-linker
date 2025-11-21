@@ -93,13 +93,16 @@ export default function JobDescription() {
         switch (section.type) {
           case "heading":
             return (
-              <h2 key={idx} className="text-[16px] font-[600]">
+              <h2 key={idx} className="text-[14px] md:text-[16px] font-[600]">
                 {section.text}
               </h2>
             );
           case "paragraph":
             return (
-              <p key={idx} className="text-[16px] font-[400] leading-[1.5]">
+              <p
+                key={idx}
+                className="text-[14px] md:text-[16px] font-[400] leading-[1.5]"
+              >
                 {section.text}
               </p>
             );
@@ -109,13 +112,13 @@ export default function JobDescription() {
                 <h3
                   className={
                     section.titleStyle === "heading"
-                      ? "text-[16px] font-[600]"
-                      : "text-[16px] font-[500]"
+                      ? "text-[14px] md:text-[16px] font-[600]"
+                      : "text-[14px] md:text-[16px] font-[500]"
                   }
                 >
                   {section.title}
                 </h3>
-                <ul className="list-disc list-inside space-y-1 text-[16px]">
+                <ul className="list-disc list-inside space-y-1 text-[14px] md:text-[16px]">
                   {section.items?.map((item, i) => (
                     <li key={i}>{item}</li>
                   ))}
