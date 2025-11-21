@@ -12,7 +12,7 @@ export default function ForgotPassword() {
           <Cover />
         </div>
         <div className="px-14 dm-font leading-[100%] absolute right-0 top-0 w-1/2 h-full overflow-y-auto">
-          <h2 className="font-[700] pt-10 text-[32px] text-[var(--black-white-1200)]">
+          <h2 className="font-[700] pt-14 text-[32px] text-[var(--black-white-1200)]">
             Forgot Password
           </h2>
           <p className="font-[400] py-3 text-[16px] text-[var(--black-white-700)]">

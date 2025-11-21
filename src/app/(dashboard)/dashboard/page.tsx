@@ -57,7 +57,13 @@ export default function Dashboard() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {jobs.map((job) => (
-                <JobCard key={job.id} job={job} />
+                <JobCard
+                  key={job.id}
+                  job={job}
+                  hideIcon={false}
+                  icon={true}
+                  hideText={true}
+                />
               ))}
             </div>
           </div>
@@ -75,7 +81,13 @@ export default function Dashboard() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {jobs.map((job) => (
-                <JobCard key={job.id} job={job} />
+                <JobCard
+                  key={job.id}
+                  job={job}
+                  hideIcon={false}
+                  icon={true}
+                  hideText={true}
+                />
               ))}
             </div>
           </div>
