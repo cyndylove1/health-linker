@@ -31,7 +31,7 @@ export default function Details({ params }: ExploreProps) {
   return (
     <>
       <div>
-        <div className="px-6 dm-font leading-[100%]">
+        <div className="md:px-6 px-4 dm-font leading-[100%]">
           <BackButton />
           <div className="bg-white border-[1px] border-[var(--black-white-200)] rounded-[16px] px-6 mb-6">
             <div className="py-6">

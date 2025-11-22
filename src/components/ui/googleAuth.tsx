@@ -6,7 +6,7 @@ interface GoogleProps {
 export default function GoogleAuth({ text, title }: GoogleProps) {
   return (
     <>
-      <div className="flex gap-[20px] dm-font">
+      <div className="flex md:flex-row flex-col gap-[20px] dm-font">
         <div className="flex justify-center w-full">
           <button className="w-full cursor-pointer h-[58px] flex items-center justify-center hover:bg-[#f5f5f5] bg-transparent rounded-[8px] border-[1px] border-[var(--black-white-300)] gap-[10px]">
             <span>

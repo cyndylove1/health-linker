@@ -8,16 +8,21 @@ import Btn from "@/components/button/btn";
 import Cover from "@/components/ui/cover";
 import Line from "@/components/ui/line";
 import Link from "next/link";
+import Logo from "@/components/icon/logo";
 
 export default function Login() {
   const [showVisible, setShowVisible] = useState(false);
   return (
     <div>
-      <div className="grid grid-cols-2">
+      <div className="grid lg:grid-cols-2 grid-cols-1">
         <div className="">
           <Cover />
         </div>
-        <div className="px-14 dm-font leading-[100%] absolute right-0 top-0 w-1/2 h-full overflow-y-auto">
+        <div className="flex lg:hidden px-4 mt-10 md:px-10">
+          <Logo/>
+        </div>
+
+        <div className="lg:px-14 px-4 md:px-10 dm-font leading-[100%] lg:absolute lg:right-0 lg:top-0 lg:w-1/2 w-full h-full overflow-y-auto">
           <h2 className="font-[700] pt-14 text-[32px] text-[var(--black-white-1200)]">
             Login
           </h2>

@@ -1,4 +1,4 @@
-export default function  NotificationCard  ()  {
+export default function NotificationCard  ()  {
   return (
     <div className="flex items-start gap-3 p-4 border-[1px] border-[var(--black-white-200)] rounded-[16px] bg-[#f9f9f9] dm-font leading-[100%]">
       <div className="">
