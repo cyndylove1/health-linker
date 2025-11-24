@@ -1,24 +1,39 @@
 import { IoSettingsOutline } from "react-icons/io5";
+import { FiChevronDown } from "react-icons/fi";
+import { SlMenu } from "react-icons/sl";
 import Image from "next/image";
 import profile from "../../../public/Mask Group.png";
 import SearchBar from "../form/searchBar";
+import { useState } from "react";
 
-export default function Header() {
+
+interface HeaderProps {
+  onMenuClick: () => void;
+}
+
+export default function Header({ onMenuClick }: HeaderProps) {
+  const [open, setOpen] = useState(false);
+
   return (
     <>
       <div className="bg-white h-[70px] flex justify-between items-center px-6 dm-font leading-[100%]">
-        <div>
-          <h2 className="text-[16px] font-[600] text-[var(--black-white-1000)]">
+        <div className="">
+          <h2 className="text-[16px] font-[600] text-[var(--black-white-1000)] hidden lg:flex">
             Hello Elizabeth Kafaru.
           </h2>
-          <p className="text-[14px] font-[400] text-[var(--black-white-800)] pt-[5px]">
+          <p className="text-[14px] font-[400] text-[var(--black-white-800)] pt-[5px] hidden lg:flex">
             You are welcome!
           </p>
+          <button className="flex lg:hidden" onClick={onMenuClick}>
+            <SlMenu />
+          </button>
         </div>
+        {/* menu icon */}
+
         <div className="flex items-center gap-[15px]">
           <SearchBar
             placeholder="Search anything here"
-            className=" h-[38px] w-[213px]"
+            className=" h-[38px] w-[213px] hidden lg:flex"
           />
           {/* notification */}
           <svg
@@ -37,25 +52,48 @@ export default function Header() {
           {/* setting */}
           <IoSettingsOutline size={20} />
           {/* profile */}
-          <div className="flex gap-[10px]">
+          <div className="relative flex items-center gap-[10px]">
+            {/* Profile Image */}
             <Image
               src={profile}
               alt="profile-pic"
               width={35}
               height={35}
-              className="h-[35px] w-[35px]"
+              className="h-[35px] w-[35px] rounded-full"
             />
-            <div className="">
+
+            {/* mobile */}
+            <button onClick={() => setOpen(!open)} className="lg:hidden">
+              <FiChevronDown size={20} />
+            </button>
+
+            {/*  large screens only */}
+            <div className="hidden lg:block">
               <h2 className="text-[14px] font-[500] text-[var(--black-white-2100)]">
                 Elizabeth Kafaru
               </h2>
               <div className="flex items-center gap-[4px] pt-[5px]">
-                <h2 className="h-[7px] w-[7px] rounded-full bg-[#08733C]"></h2>
-                <h6 className="text-[12px] font-[400] text-[var(--black-white-700)] ">
+                <span className="h-[7px] w-[7px] rounded-full bg-[#08733C]" />
+                <h6 className="text-[12px] font-[400] text-[var(--black-white-700)]">
                   Online
                 </h6>
               </div>
             </div>
+
+            {/* Dropdown for mobile only */}
+            {open && (
+              <div className="absolute top-[45px] left-[-5rem] bg-white shadow-md rounded-md p-3 w-[150px] lg:hidden z-50">
+                <h2 className="text-[14px] font-[500] text-[var(--black-white-2100)]">
+                  Elizabeth Kafaru
+                </h2>
+                <div className="flex items-center gap-[4px] pt-[5px]">
+                  <span className="h-[7px] w-[7px] rounded-full bg-[#08733C]" />
+                  <h6 className="text-[12px] font-[400] text-[var(--black-white-700)]">
+                    Online
+                  </h6>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

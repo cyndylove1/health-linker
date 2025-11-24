@@ -135,7 +135,7 @@ export default function SavedJobs({ params }: PageProps) {
   ];
 
   return (
-    <div className="px-6 dm-font leading-[100%]">
+    <div className="md:px-6 px-4 dm-font leading-[100%]">
       <Title text="Saved Jobs" />
       <div className="bg-white border-[1px] border-[var(--black-white-200)] rounded-[16px] px-6 mb-6">
         <div className="py-6">
@@ -151,7 +151,7 @@ export default function SavedJobs({ params }: PageProps) {
         <JobFilter />
 
         {/* Grid of jobs */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[15px] mt-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[15px] mt-6">
           {jobs.map((job) => (
             <Link key={job.id} href={`/saved-jobs/details/${job.id}`}>
               <JobCard job={job} hideIcon={false} icon={true} hideText={true} />
