@@ -37,12 +37,15 @@ export default function SelectTag({ title, options, onSelect }: SelectProps) {
         className="flex items-center justify-between w-full px-4 h-[35px] rounded-full bg-[#F9F9F9] text-[13px] font-[500] dm-font text-[var(--black-white-1000)] border border-[var(--black-white-200)] gap-2"
       >
         {title}
-        <FiChevronDown size={18} className={`transition ${open ? "rotate-180" : ""}`} />
+        <FiChevronDown
+          size={18}
+          className={`transition ${open ? "rotate-180" : ""}`}
+        />
       </button>
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute mt-2 w-40 bg-[#f9f9f9] shadow-md rounded-lg border border-gray-200 z-20">
+        <div className="absolute mt-2 w-full bg-[#f9f9f9] shadow-md rounded-lg border border-gray-200 z-20">
           <ul className="py-2">
             {options.map((item) => (
               <li

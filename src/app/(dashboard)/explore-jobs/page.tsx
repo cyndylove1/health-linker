@@ -151,7 +151,7 @@ export default function ExploreJobs({ params }: PageProps) {
         <JobFilter />
 
         {/* Grid of jobs */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-[15px] mt-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[15px] mt-6">
           {jobs.map((job) => (
             <Link key={job.id} href={`/explore-jobs/details/${job.id}`}>
               <JobCard job={job} hideIcon={false} icon={true} hideText={true} />

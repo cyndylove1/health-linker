@@ -166,7 +166,7 @@ export default function AppliedJobs({ params }: PageProps) {
   ];
 
   return (
-    <div className="px-6 dm-font leading-[100%] relative">
+    <div className="md:px-6 px-4 dm-font leading-[100%] relative">
       <Title text="Applied Jobs" />
       <div className="bg-white border-[1px] border-[var(--black-white-200)] rounded-[16px] px-6 mb-6">
         <div className="flex items-center justify-between">
@@ -184,15 +184,20 @@ export default function AppliedJobs({ params }: PageProps) {
           >
             <CalendarIcon />
             <IoIosArrowDown size={20} className="text-[#1C9D75]" />
-            <CalendarMenu isOpen={isOpen} openModal={() => {}} />
           </button>
+          <CalendarMenu isOpen={isOpen} openModal={() => {}} />
         </div>
 
         {/* Grid of jobs */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[15px] mt-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[15px] mt-6">
           {jobs.map((job) => (
             <div key={job.id}>
-              <JobCard job={job} hideIcon={true} icon={false} hideText={false} />
+              <JobCard
+                job={job}
+                hideIcon={true}
+                icon={false}
+                hideText={false}
+              />
             </div>
           ))}
         </div>
