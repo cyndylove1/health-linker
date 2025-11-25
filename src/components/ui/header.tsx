@@ -2,7 +2,6 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { FiChevronDown } from "react-icons/fi";
 import { SlMenu } from "react-icons/sl";
 import Image from "next/image";
-import profile from "../../../public/Mask Group.png";
 import SearchBar from "../form/searchBar";
 import { useState } from "react";
 
@@ -55,7 +54,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
           <div className="relative flex items-center gap-[10px]">
             {/* Profile Image */}
             <Image
-              src={profile}
+              src="/Mask Group.png"
               alt="profile-pic"
               width={35}
               height={35}
