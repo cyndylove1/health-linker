@@ -7,11 +7,7 @@ import JobFilter from "@/components/ui/jobFilter";
 import JobDescription from "@/components/ui/jobDescription";
 import ShareMenu from "@/components/dropDown.tsx/shareMenu";
 
-interface SavedProps {
-  params: { id: string };
-}
-
-export default function Details({ params }: SavedProps) {
+export default function Details() {
   const [OpenMenu, setOpenMenu] = useState(false);
   const toggleMenu = () => setOpenMenu((prev) => !prev);
   return (

@@ -18,11 +18,7 @@ interface Job {
   applied: string;
 }
 
-interface PageProps {
-  params: { page: string };
-}
-
-export default function AppliedJobs({ params }: PageProps) {
+export default function AppliedJobs() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -185,7 +181,7 @@ export default function AppliedJobs({ params }: PageProps) {
             <CalendarIcon />
             <IoIosArrowDown size={20} className="text-[#1C9D75]" />
           </button>
-          <CalendarMenu isOpen={isOpen} openModal={() => {}} />
+          <CalendarMenu isOpen={isOpen} openModal={() => { }} />
         </div>
 
         {/* Grid of jobs */}

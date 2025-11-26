@@ -7,15 +7,11 @@ import JobFilter from "@/components/ui/jobFilter";
 import JobDescription from "@/components/ui/jobDescription";
 import ShareMenu from "@/components/dropDown.tsx/shareMenu";
 
-interface ExploreProps {
-  params: { id: string };
-}
-
-export default function Details({ params }: ExploreProps) {
+export default function Details() {
   const [menuOpen, setMenuOpen] = useState(false);
-   const toggleMenu = () => setMenuOpen((prev) => !prev);
+  const toggleMenu = () => setMenuOpen((prev) => !prev);
 
- 
+
   //    function handleClickOutside(event: MouseEvent) {
   //      if (
   //        dropdownRef.current &&
@@ -27,7 +23,7 @@ export default function Details({ params }: ExploreProps) {
   //    document.addEventListener("mousedown", handleClickOutside);
   //    return () => document.removeEventListener("mousedown", handleClickOutside);
   //  }, []);
-    
+
   return (
     <>
       <div>

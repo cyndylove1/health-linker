@@ -19,7 +19,9 @@ export default function Login() {
           <Cover />
         </div>
         <div className="flex lg:hidden px-4 mt-10 md:px-10">
-          <Logo/>
+          <Link href="/">
+            <Logo />
+          </Link>
         </div>
 
         <div className="lg:px-14 px-4 md:px-10 dm-font leading-[100%] lg:absolute lg:right-0 lg:top-0 lg:w-1/2 w-full h-full overflow-y-auto">
