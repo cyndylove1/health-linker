@@ -194,7 +194,7 @@ export default function SignUp() {
 
           <GoogleAuth
             text="Sign up with Google"
-            title="Sign up with Facebook"
+
           />
 
           <p className="pt-6 pb-8 text-[16px] font-[400] text-[var(--black-white-600)]">
