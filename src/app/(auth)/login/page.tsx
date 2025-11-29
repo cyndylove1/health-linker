@@ -143,7 +143,7 @@ export default function Login() {
                 showVisibility={showVisible}
                 togglePasswordVisibility={() => setShowVisible(!showVisible)}
                 onChange={handlePasswordChange}
-                error={passwordError} 
+                error={passwordError}
               />
             </div>
 
@@ -164,7 +164,7 @@ export default function Login() {
             </div>
           </form>
 
-          <GoogleAuth text="Login with Google" title="Login with Facebook" />
+          <GoogleAuth text="Login with Google" />
         </div>
       </div>
     </div>

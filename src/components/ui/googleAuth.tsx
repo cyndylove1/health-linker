@@ -5,18 +5,15 @@ import { useAuth } from "@/context/authContext";
 
 declare global {
   interface Window {
-    fbAsyncInit: () => void;
-    FB: any;
     google: any;
   }
 }
 
 interface GoogleProps {
   text?: string;
-  title?: string;
 }
 
-export default function GoogleAuth({ text, title }: GoogleProps) {
+export default function GoogleAuth({ text }: GoogleProps) {
   const { socialLogin } = useAuth();
 
   // --- LOAD GOOGLE SCRIPT ---
@@ -32,31 +29,6 @@ export default function GoogleAuth({ text, title }: GoogleProps) {
     };
   }, []);
 
-  // --- LOAD FACEBOOK SCRIPT ---
-  useEffect(() => {
-    window.fbAsyncInit = function () {
-      window.FB.init({
-        appId: process.env.NEXT_PUBLIC_FB_APP_ID,
-        cookie: true,
-        xfbml: true,
-        version: "v18.0",
-      });
-    };
-
-    (function (d, s, id) {
-      let js: HTMLScriptElement | null = null;
-      const fjs = d.getElementsByTagName(s)[0] as HTMLElement;
-
-      if (d.getElementById(id)) return;
-
-      js = d.createElement(s) as HTMLScriptElement;
-      js.id = id;
-      js.src = "https://connect.facebook.net/en_US/sdk.js";
-
-      fjs.parentNode?.insertBefore(js, fjs);
-    })(document, "script", "facebook-jssdk");
-  }, []);
-
   // ---------------- GOOGLE LOGIN FUNCTION ----------------
   const handleGoogleLogin = () => {
     if (!window.google) {
@@ -64,8 +36,11 @@ export default function GoogleAuth({ text, title }: GoogleProps) {
       return;
     }
 
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+    console.log("Initializing Google Sign-In with Client ID:", clientId);
+
     window.google.accounts.id.initialize({
-      client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
+      client_id: clientId!,
       callback: async (response: { credential: string }) => {
         const token = response.credential;
 
@@ -79,32 +54,6 @@ export default function GoogleAuth({ text, title }: GoogleProps) {
     });
 
     window.google.accounts.id.prompt();
-  };
-
-  // ---------------- FACEBOOK LOGIN FUNCTION ----------------
-  const handleFacebookLogin = () => {
-    if (!window.FB) {
-      console.error("Facebook SDK not loaded");
-      return;
-    }
-
-    window.FB.login(
-      async function (response: any) {
-        if (response.authResponse) {
-          const accessToken = response.authResponse.accessToken;
-
-          try {
-            // Use the socialLogin function from auth context
-            await socialLogin("facebook", accessToken);
-          } catch (error) {
-            console.error("Facebook login failed:", error);
-          }
-        } else {
-          console.log("User cancelled login or did not fully authorize.");
-        }
-      },
-      { scope: "email,public_profile" }
-    );
   };
 
   return (
@@ -150,40 +99,7 @@ export default function GoogleAuth({ text, title }: GoogleProps) {
             </h2>
           </button>
         </div>
-        <div className="flex justify-center w-full">
-          <button
-            className="w-full cursor-pointer h-[58px] flex items-center justify-center hover:bg-[#f5f5f5] bg-transparent rounded-[8px] border-[1px] border-[var(--black-white-300)] gap-[10px]"
-            onClick={handleFacebookLogin}
-            type="button"
-          >
-            <span>
-              <svg
-                width="25"
-                height="25"
-                viewBox="0 0 25 25"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M25 12.5006C25 5.59669 19.4036 0 12.5 0C5.59644 0 0 5.59669 0 12.5006C0 18.7399 4.57106 23.9115 10.5469 24.8493V16.114H7.37305V12.5006H10.5469V9.74654C10.5469 6.61357 12.413 4.88304 15.2683 4.88304C16.6359 4.88304 18.0664 5.12718 18.0664 5.12718V8.20349H16.4902C14.9374 8.20349 14.4531 9.16709 14.4531 10.1557V12.5006H17.9199L17.3657 16.114H14.4531V24.8493C20.4289 23.9115 25 18.7399 25 12.5006Z"
-                  fill="#1877F2"
-                />
-                <path
-                  d="M17.3647 16.1129L17.9189 12.4995H14.4521V10.1545C14.4521 9.16598 14.9364 8.20238 16.4892 8.20238H18.0654V5.12607C18.0654 5.12607 16.6349 4.88193 15.2673 4.88193C12.412 4.88193 10.5459 6.61246 10.5459 9.74543V12.4995H7.37207V16.1129H10.5459V24.8482C11.192 24.9494 11.845 25.0002 12.499 25C13.1635 25 13.8157 24.948 14.4521 24.8482V16.1129H17.3647Z"
-                  fill="white"
-                />
-              </svg>
-            </span>
-            <h2
-              className="text-[var(--black-white-1000)] transition-transform duration-300 ease-in-out transform
-             text-[14px] leading-[100%] font-[600]"
-            >
-              {title}
-            </h2>
-          </button>
-        </div>
       </div>
     </>
   );
 }
-
