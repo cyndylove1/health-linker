@@ -18,13 +18,44 @@ export default function SignUp() {
   const { registrationData, setRegistrationData } = useRegistration();
   const [show, setShow] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [passwordError, setPasswordError] = useState("");
+
+  // Password validation function
+  const validatePassword = (password: string) => {
+    const regex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&._-])[A-Za-z\d@$!%*#?&._-]{8,}$/;
+
+    if (!regex.test(password)) {
+      return "Password must be at least 8 characters, include uppercase, lowercase, number and symbol.";
+    }
+
+    return "";
+  };
+
+  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const password = e.target.value;
+
+    setRegistrationData({
+      ...registrationData,
+      password,
+    });
+
+    setPasswordError(validatePassword(password));
+  };
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (passwordError || !registrationData.password) {
+      return;
+    }
+
     setIsLoading(true);
 
     try {
       await registerUser(registrationData);
-      // RESET
+
       setRegistrationData({
         firstName: "",
         lastName: "",
@@ -38,8 +69,6 @@ export default function SignUp() {
     }
   };
 
-
-  
   return (
     <div>
       <div className="grid lg:grid-cols-2 grid-cols-1">
@@ -76,7 +105,7 @@ export default function SignUp() {
                   placeholder="Enter First Name"
                   required
                   value={registrationData.firstName}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  onChange={(e) =>
                     setRegistrationData({
                       ...registrationData,
                       firstName: e.target.value,
@@ -92,7 +121,7 @@ export default function SignUp() {
                   placeholder="Enter Last Name"
                   required
                   value={registrationData.lastName}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  onChange={(e) =>
                     setRegistrationData({
                       ...registrationData,
                       lastName: e.target.value,
@@ -109,7 +138,7 @@ export default function SignUp() {
                 placeholder="Enter your email address"
                 required
                 value={registrationData.email}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                onChange={(e) =>
                   setRegistrationData({
                     ...registrationData,
                     email: e.target.value,
@@ -125,25 +154,22 @@ export default function SignUp() {
                 showVisibility={show}
                 togglePasswordVisibility={() => setShow(!show)}
                 value={registrationData.password}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setRegistrationData({
-                    ...registrationData,
-                    password: e.target.value,
-                  })
-                }
+                onChange={handlePasswordChange}
+                error={passwordError}
               />
             </div>
 
             <div className="mt-[20px]">
               <Btn
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoading || passwordError !== ""}
                 className="h-[40px] w-full rounded-[20px] text-[16px] text-white bg-[var(--primary-1200)] hover:bg-[#078e63]"
                 text={isLoading ? "Signing Up..." : "Sign Up"}
               />
               <Line />
             </div>
           </form>
+
           <GoogleAuth
             text="Sign up with Google"
             title="Sign up with Facebook"

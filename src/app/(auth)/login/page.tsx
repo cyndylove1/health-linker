@@ -1,5 +1,5 @@
 "use client";
-import { useState, FormEvent, useEffect } from "react";
+import { useState, FormEvent } from "react";
 import Input from "@/components/form/input";
 import InputPassword from "@/components/form/inputPassword";
 import Label from "@/components/form/label";
@@ -15,18 +15,48 @@ export default function Login() {
   const [showVisible, setShowVisible] = useState(false);
   const { loginUser } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+
+  const [passwordError, setPasswordError] = useState("");
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  
+
+  // PASSWORD VALIDATION FUNCTION
+  const validatePassword = (password: string) => {
+    const regex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&._-])[A-Za-z\d@$!%*#?&._-]{8,}$/;
+
+    if (!regex.test(password)) {
+      return "Password must be at least 8 characters, include uppercase, lowercase, number and symbol.";
+    }
+    return "";
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const password = e.target.value;
+
+    setFormData({
+      ...formData,
+      password,
+    });
+
+    setPasswordError(validatePassword(password));
+  };
+
   const handleLogin = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
+
+    // prevent login if password invalid
+    if (passwordError || !formData.password) return;
+
     setIsLoading(true);
 
     try {
       await loginUser(formData);
-      //  RESET FORM
+
+      // RESET FORM
       setFormData({
         email: "",
         password: "",
@@ -41,9 +71,10 @@ export default function Login() {
   return (
     <div>
       <div className="grid lg:grid-cols-2 grid-cols-1">
-        <div className="">
+        <div>
           <Cover />
         </div>
+
         <div className="flex lg:hidden px-4 mt-10 md:px-10">
           <Logo />
         </div>
@@ -52,6 +83,7 @@ export default function Login() {
           <h2 className="font-[700] pt-14 text-[32px] text-[var(--black-white-1200)]">
             Login
           </h2>
+
           <p className="font-[400] py-3 text-[16px] text-[var(--black-white-700)]">
             Don’t have an account?&nbsp;
             <Link href="/sign-up">
@@ -60,7 +92,8 @@ export default function Login() {
               </span>
             </Link>
           </p>
-          <form action="" onSubmit={handleLogin}>
+
+          <form onSubmit={handleLogin}>
             <div className="mt-[10px]">
               <Label text="Email" />
               <Input
@@ -77,6 +110,7 @@ export default function Login() {
                 }
               />
             </div>
+
             <div className="mt-[10px]">
               <Label text="Password" />
               <InputPassword
@@ -86,28 +120,28 @@ export default function Login() {
                 value={formData.password}
                 showVisibility={showVisible}
                 togglePasswordVisibility={() => setShowVisible(!showVisible)}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    [e.target.name]: e.target.value,
-                  })
-                }
+                onChange={handlePasswordChange}
+                error={passwordError} 
               />
             </div>
+
             <div className="mt-[20px]">
               <Btn
-                disabled={isLoading}
+                disabled={isLoading || passwordError !== ""}
                 className="h-[40px] w-full bg-[var(--primary-1200)] hover:bg-[#078e63] text-white rounded-[20px] text-[16px]"
                 text={isLoading ? "Loading..." : "Login"}
               />
+
               <Link href="/forgot-password">
                 <p className="font-[400] py-2 flex justify-end text-[16px] text-[var(--primary-1200)] hover:text-[#078e63]">
                   Forgotten Password?
                 </p>
               </Link>
+
               <Line />
             </div>
           </form>
+
           <GoogleAuth text="Login with Google" title="Login with Facebook" />
         </div>
       </div>
