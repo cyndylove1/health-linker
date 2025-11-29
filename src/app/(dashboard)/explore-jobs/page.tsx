@@ -16,11 +16,7 @@ interface Job {
   salary: string;
 }
 
-interface PageProps {
-  params: { page: string };
-}
-
-export default function ExploreJobs({ params }: PageProps) {
+export default function ExploreJobs() {
   const [currentPage, setCurrentPage] = useState(1);
 
   const jobs: Job[] = [
