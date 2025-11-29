@@ -32,7 +32,9 @@ export default function Sidebar({
         `}
       >
         <div className="pt-6 px-4 flex justify-between lg:block">
-          <Logo />
+          <Link href="/">
+            <Logo />
+          </Link>
           {/* close icon */}
           <button
             className="lg:hidden text-xl text-black"

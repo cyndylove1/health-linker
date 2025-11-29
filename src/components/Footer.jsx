@@ -26,8 +26,7 @@ export default function Footer() {
 
             {/* Short description */}
             <p className="text-sm text-gray-500 max-w-[340px]">
-              Hello, we are ABC. trying to make an effort to put the right people
-              for you to get the best results. Just insight
+              HealthLinker is dedicated to connecting healthcare professionals with rewarding career opportunities. We empower nurses, doctors, therapists, and other healthcare workers to find meaningful positions that make a difference.
             </p>
 
             {/* Social icons */}
@@ -40,8 +39,8 @@ export default function Footer() {
 
             {/* Phone and email */}
             <div className="text-sm text-gray-600 space-y-2">
-              <div>(123) 456-7890</div>
-              <div>ABC@gmail.com</div>
+              <div>+1 (800) HEALTH-1</div>
+              <div>support@healthlinker.com</div>
             </div>
           </div>
 
@@ -51,29 +50,29 @@ export default function Footer() {
             <div>
               <h4 className="text-sm font-semibold text-gray-900 mb-4">Company</h4>
               <ul className="space-y-3 text-sm text-gray-500">
-                <li><a href="#" className="hover:text-gray-900">About</a></li>
-                <li><a href="#" className="hover:text-gray-900">Contact</a></li>
-                <li><a href="#" className="hover:text-gray-900">Jobs</a></li>
+                <li><a href="/about" className="hover:text-gray-900">About Us</a></li>
+                <li><a href="/contact" className="hover:text-gray-900">Contact Us</a></li>
+                <li><a href="/jobs" className="hover:text-gray-900">Browse Jobs</a></li>
               </ul>
             </div>
 
             {/* Links */}
             <div>
-              <h4 className="text-sm font-semibold text-gray-900 mb-4">Link</h4>
+              <h4 className="text-sm font-semibold text-gray-900 mb-4">Resources</h4>
               <ul className="space-y-3 text-sm text-gray-500">
-                <li><a href="#" className="hover:text-gray-900">Terms and Conditions</a></li>
+                <li><a href="#" className="hover:text-gray-900">Terms of Service</a></li>
                 <li><a href="#" className="hover:text-gray-900">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-gray-900">YouTube</a></li>
+                <li><a href="#" className="hover:text-gray-900">FAQ</a></li>
               </ul>
             </div>
 
             {/* Contact column */}
             <div>
-              <h4 className="text-sm font-semibold text-gray-900 mb-4">Contact</h4>
+              <h4 className="text-sm font-semibold text-gray-900 mb-4">Get Support</h4>
               <ul className="space-y-3 text-sm text-gray-500">
-                <li>welcome@healthlinker</li>
-                <li>+44 000 000 00</li>
-                <li>The office's address here</li>
+                <li>support@healthlinker.com</li>
+                <li>+1 (800) 324-5825</li>
+                <li>Available 24/7 for assistance</li>
               </ul>
             </div>
           </div>
@@ -84,7 +83,7 @@ export default function Footer() {
 
         {/* Bottom copyright */}
         <div className="text-center text-xs text-gray-400 py-6">
-          © {new Date().getFullYear()} Health Linker. All rights reserved.
+          © {new Date().getFullYear()} HealthLinker. Connecting Healthcare Professionals with Opportunities. All rights reserved.
         </div>
       </div>
     </footer>

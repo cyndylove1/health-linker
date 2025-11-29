@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, ChangeEvent, FormEvent } from "react";
+import { useState, ChangeEvent, FormEvent, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useRegistration } from "@/context/registrationContext";
 import Input from "@/components/form/input";
 import InputPassword from "@/components/form/inputPassword";
@@ -14,12 +15,33 @@ import Logo from "@/components/icon/logo";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function SignUp() {
-  const { registerUser } = useAuth();
+  const { registerUser, isAuthenticated, isLoading: authLoading } = useAuth();
   const { registrationData, setRegistrationData } = useRegistration();
   const [show, setShow] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const [passwordError, setPasswordError] = useState("");
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      router.push('/dashboard');
+    }
+  }, [isAuthenticated, authLoading, router]);
+
+  // Don't render if authenticated
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-lg">Loading...</div>
+      </div>
+    );
+  }
+
+  if (isAuthenticated) {
+    return null;
+  }
 
   // Password validation function
   const validatePassword = (password: string) => {

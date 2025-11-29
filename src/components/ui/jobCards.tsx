@@ -1,35 +1,62 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import { IoHeartOutline } from "react-icons/io5";
+import { IoHeartOutline, IoHeart } from "react-icons/io5";
 import { MapPin } from "lucide-react";
 import { RxDotsVertical } from "react-icons/rx";
 import Menu from "../dropDown.tsx/menu";
 import DeleteModal from "../modal/deleteModal";
- interface JobItem {
-   id: number;
-   title: string;
-   company: string;
-   type: string;
-   location: string;
-   date: string;
-   salary: string;
-   applied?: string;
+import { useJob } from "@/context/jobContext";
+import { useUser } from "@/context/userContext";
+import { toast } from "react-toastify";
 
- }
- interface JobProps {
-   hideIcon?: boolean;
-   hideText?: boolean;
-   icon?: boolean;
-   job: JobItem[] | JobItem;
- }
+export interface JobItem {
+  id: string;
+  title: string;
+  company: string;
+  type: string;
+  location: string;
+  date: string;
+  salary: string;
+  applied?: string;
+}
+
+interface JobProps {
+  hideIcon?: boolean;
+  hideText?: boolean;
+  icon?: boolean;
+  job: JobItem[] | JobItem;
+}
 export default function JobCard({ job, hideIcon, icon, hideText }: JobProps) {
-  const [openModalId, setOpenModalId] = useState<number | null>(null);
-  const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+  const [openModalId, setOpenModalId] = useState<string | null>(null);
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [savingJobId, setSavingJobId] = useState<string | null>(null);
 
+  const { saveJob, unsaveJob } = useJob();
+  const { savedJobs } = useUser();
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const toggleMenu = (id: number) => {
+  const toggleMenu = (id: string) => {
     setOpenMenuId((prev) => (prev === id ? null : id));
+  };
+
+  const handleSaveJob = async (jobId: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    setSavingJobId(jobId);
+    const isSaved = savedJobs.some(job => job.id === jobId);
+    
+    try {
+      if (isSaved) {
+        await unsaveJob(jobId);
+      } else {
+        await saveJob(jobId);
+      }
+    } catch (error) {
+      console.error('Save job failed:', error);
+    } finally {
+      setSavingJobId(null);
+    }
   };
 
   useEffect(() => {
@@ -55,11 +82,23 @@ export default function JobCard({ job, hideIcon, icon, hideText }: JobProps) {
           <div className="flex justify-between items-center">
             <h3 className="text-[16px] font-[600]">{item.title}</h3>
 
-            {/* Heart Icon */}
+            {/* Heart Icon - Save Job */}
             {!hideIcon && (
-              <div className="bg-[#bbbbbb] w-[25px] h-[25px] rounded-full flex items-center justify-center">
-                <IoHeartOutline size={20} className="text-white" />
-              </div>
+              <button
+                onClick={(e) => handleSaveJob(item.id, e)}
+                disabled={savingJobId === item.id}
+                className={`w-[25px] h-[25px] rounded-full flex items-center justify-center transition-all duration-200 ${
+                  savedJobs.some(job => job.id === item.id)
+                    ? 'bg-[var(--primary-1200)] hover:bg-[var(--primary-1000)]' 
+                    : 'bg-[#bbbbbb] hover:bg-[#999999]'
+                } ${savingJobId === item.id ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+              >
+                {savedJobs.some(job => job.id === item.id) ? (
+                  <IoHeart size={20} className="text-white" />
+                ) : (
+                  <IoHeartOutline size={20} className="text-white" />
+                )}
+              </button>
             )}
 
             {/* Menu Button + Menu */}

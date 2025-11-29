@@ -1,134 +1,36 @@
 "use client";
-import { useState } from "react";
 import JobCard from "@/components/ui/jobCards";
 import JobFilter from "@/components/ui/jobFilter";
 import Title from "@/components/ui/title";
 import Pagination from "@/components/ui/pagination";
 import Link from "next/link";
-
-interface Job {
-  id: number;
-  title: string;
-  company: string;
-  type: string;
-  location: string;
-  date: string;
-  salary: string;
-}
+import { useJob } from "@/context/jobContext";
+import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 
 export default function ExploreJobs() {
-  const [currentPage, setCurrentPage] = useState(1);
+  const { jobs, totalJobs, currentPage, totalPages, fetchJobs, isLoading } = useJob();
+  const searchParams = useSearchParams();
 
-  const jobs: Job[] = [
-    {
-      id: 1,
-      title: "Surgeon",
-      company: "Edoubleone Company",
-      type: "Full-Time",
-      location: "Remote, USA",
-      date: "2 days ago",
-      salary: "$50.00 – $70.00",
-    },
-    {
-      id: 2,
-      title: "Surgeon",
-      company: "Edoubleone Company",
-      type: "Full-Time",
-      location: "Remote, USA",
-      date: "2 days ago",
-      salary: "$50.00 – $70.00",
-    },
-    {
-      id: 3,
-      title: "Surgeon",
-      company: "Edoubleone Company",
-      type: "Full-Time",
-      location: "Remote, USA",
-      date: "2 days ago",
-      salary: "$50.00 – $70.00",
-    },
-    {
-      id: 4,
-      title: "Surgeon",
-      company: "Edoubleone Company",
-      type: "Full-Time",
-      location: "Remote, USA",
-      date: "2 days ago",
-      salary: "$50.00 – $70.00",
-    },
-    {
-      id: 5,
-      title: "Surgeon",
-      company: "Edoubleone Company",
-      type: "Full-Time",
-      location: "Remote, USA",
-      date: "2 days ago",
-      salary: "$50.00 – $70.00",
-    },
-    {
-      id: 6,
-      title: "Surgeon",
-      company: "Edoubleone Company",
-      type: "Full-Time",
-      location: "Remote, USA",
-      date: "2 days ago",
-      salary: "$50.00 – $70.00",
-    },
-    {
-      id: 7,
-      title: "Surgeon",
-      company: "Edoubleone Company",
-      type: "Full-Time",
-      location: "Remote, USA",
-      date: "2 days ago",
-      salary: "$50.00 – $70.00",
-    },
-    {
-      id: 8,
-      title: "Surgeon",
-      company: "Edoubleone Company",
-      type: "Full-Time",
-      location: "Remote, USA",
-      date: "2 days ago",
-      salary: "$50.00 – $70.00",
-    },
-    {
-      id: 9,
-      title: "Surgeon",
-      company: "Edoubleone Company",
-      type: "Full-Time",
-      location: "Remote, USA",
-      date: "2 days ago",
-      salary: "$50.00 – $70.00",
-    },
-    {
-      id: 10,
-      title: "Surgeon",
-      company: "Edoubleone Company",
-      type: "Full-Time",
-      location: "Remote, USA",
-      date: "2 days ago",
-      salary: "$50.00 – $70.00",
-    },
-    {
-      id: 11,
-      title: "Surgeon",
-      company: "Edoubleone Company",
-      type: "Full-Time",
-      location: "Remote, USA",
-      date: "2 days ago",
-      salary: "$50.00 – $70.00",
-    },
-    {
-      id: 12,
-      title: "Surgeon",
-      company: "Edoubleone Company",
-      type: "Full-Time",
-      location: "Remote, USA",
-      date: "2 days ago",
-      salary: "$50.00 – $70.00",
-    },
-  ];
+  // Get search parameters if they exist
+  const search = searchParams.get('search');
+  const location = searchParams.get('location');
+
+  useEffect(() => {
+    // Fetch jobs with search parameters if they exist, otherwise fetch all jobs
+    const filters: any = { page: 1, limit: 12 };
+    if (search) filters.search = search;
+    if (location) filters.location = location;
+
+    fetchJobs(filters);
+  }, [searchParams]); // Re-fetch when search params change
+
+  const handlePageChange = (page: number) => {
+    const filters: any = { page };
+    if (search) filters.search = search;
+    if (location) filters.location = location;
+    fetchJobs(filters);
+  };
 
   return (
     <div className="px-4 md:px-6 dm-font leading-[100%]">
@@ -136,10 +38,10 @@ export default function ExploreJobs() {
       <div className="bg-white border-[1px] border-[var(--black-white-200)] rounded-[16px] px-6 mb-6">
         <div className="py-6">
           <h2 className="text-[20px] font-[600] text-[var(--black-white-1000)]">
-            All Jobs
+            {search || location ? "Search Results" : "All Jobs"}
           </h2>
           <p className="text-[20px] font-[400] pt-2 text-[var(--black-white-900)]">
-            10,000+ jobs
+            {totalJobs > 0 ? `${totalJobs} ${totalJobs === 1 ? 'job' : 'jobs'} found` : "No jobs available"}
           </p>
         </div>
 
@@ -147,19 +49,29 @@ export default function ExploreJobs() {
         <JobFilter />
 
         {/* Grid of jobs */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[15px] mt-6">
-          {jobs.map((job) => (
-            <Link key={job.id} href={`/explore-jobs/details/${job.id}`}>
-              <JobCard job={job} hideIcon={false} icon={true} hideText={true} />
-            </Link>
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="py-10 text-center">Loading jobs...</div>
+        ) : jobs.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[15px] mt-6">
+            {jobs.map((job) => (
+              <Link key={job.id} href={`/explore-jobs/details/${job.id}`}>
+                <JobCard job={job} hideIcon={false} icon={true} hideText={true} />
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="py-10 text-center text-gray-500">
+            No jobs found. {search || location ? "Try adjusting your search criteria." : "Check back later for new opportunities."}
+          </div>
+        )}
 
-        <Pagination
-          currentPage={currentPage}
-          totalPages={10}
-          onPageChange={(page) => setCurrentPage(page)}
-        />
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        )}
       </div>
     </div>
   );

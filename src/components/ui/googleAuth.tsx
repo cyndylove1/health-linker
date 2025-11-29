@@ -1,9 +1,7 @@
 "use client";
 
-import axios from "axios";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-
+import { useAuth } from "@/context/authContext";
 
 declare global {
   interface Window {
@@ -12,18 +10,26 @@ declare global {
     google: any;
   }
 }
+
 interface GoogleProps {
   text?: string;
   title?: string;
 }
 
 export default function GoogleAuth({ text, title }: GoogleProps) {
+  const { socialLogin } = useAuth();
+
   // --- LOAD GOOGLE SCRIPT ---
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://accounts.google.com/gsi/client";
     script.async = true;
     document.body.appendChild(script);
+
+    return () => {
+      // Cleanup
+      document.body.removeChild(script);
+    };
   }, []);
 
   // --- LOAD FACEBOOK SCRIPT ---
@@ -53,20 +59,22 @@ export default function GoogleAuth({ text, title }: GoogleProps) {
 
   // ---------------- GOOGLE LOGIN FUNCTION ----------------
   const handleGoogleLogin = () => {
-    if (!window.google) return;
+    if (!window.google) {
+      console.error("Google SDK not loaded");
+      return;
+    }
 
     window.google.accounts.id.initialize({
       client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
       callback: async (response: { credential: string }) => {
         const token = response.credential;
 
-        await axios.post("/api/auth/google", {
-          googleToken: token,
-        });
-
-        await axios.post("/api/auth/google/token", {
-          id_token: token,
-        });
+        try {
+          // Use the socialLogin function from auth context
+          await socialLogin("google", token);
+        } catch (error) {
+          console.error("Google login failed:", error);
+        }
       },
     });
 
@@ -75,105 +83,29 @@ export default function GoogleAuth({ text, title }: GoogleProps) {
 
   // ---------------- FACEBOOK LOGIN FUNCTION ----------------
   const handleFacebookLogin = () => {
-    if (!window.FB) return;
+    if (!window.FB) {
+      console.error("Facebook SDK not loaded");
+      return;
+    }
 
     window.FB.login(
       async function (response: any) {
         if (response.authResponse) {
           const accessToken = response.authResponse.accessToken;
 
-          await axios.post("/api/auth/facebook", {
-            accessToken,
-          });
-
-          await axios.post("/api/auth/facebook/token", {
-            access_token: accessToken,
-          });
+          try {
+            // Use the socialLogin function from auth context
+            await socialLogin("facebook", accessToken);
+          } catch (error) {
+            console.error("Facebook login failed:", error);
+          }
+        } else {
+          console.log("User cancelled login or did not fully authorize.");
         }
       },
       { scope: "email,public_profile" }
     );
   };
-  // const router = useRouter();
-
-  // // --- LOAD GOOGLE SCRIPT ---
-  // useEffect(() => {
-  //   const script = document.createElement("script");
-  //   script.src = "https://accounts.google.com/gsi/client";
-  //   script.async = true;
-  //   document.body.appendChild(script);
-  // }, []);
-
-  // // --- LOAD FACEBOOK SCRIPT ---
-  // useEffect(() => {
-  //   window.fbAsyncInit = function () {
-  //     window.FB.init({
-  //       appId: process.env.NEXT_PUBLIC_FB_APP_ID,
-  //       cookie: true,
-  //       xfbml: true,
-  //       version: "v18.0",
-  //     });
-  //   };
-
-  //   (function (d, s, id) {
-  //     let js: HTMLScriptElement | null = null;
-  //     const fjs = d.getElementsByTagName(s)[0] as HTMLElement;
-
-  //     if (d.getElementById(id)) return;
-
-  //     js = d.createElement(s) as HTMLScriptElement;
-  //     js.id = id;
-  //     js.src = "https://connect.facebook.net/en_US/sdk.js";
-
-  //     fjs.parentNode?.insertBefore(js, fjs);
-  //   })(document, "script", "facebook-jssdk");
-  // }, []);
-
-  // // ---------------- GOOGLE LOGIN FUNCTION ----------------
-  // const handleGoogleLogin = () => {
-  //   if (!window.google) return;
-
-  //   let promptInProgress = false;
-  //   if (promptInProgress) return;
-  //   promptInProgress = true;
-
-  //   window.google.accounts.id.initialize({
-  //     client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
-  //     callback: async (response: { credential: string }) => {
-  //       const token = response.credential;
-
-  //       try {
-  //         await axios.post("/api/auth/google", { googleToken: token });
-  //         await axios.post("/api/auth/google/token", { id_token: token });
-  //         router.push("/dashboard");
-  //       } finally {
-  //         promptInProgress = false;
-  //       }
-  //     },
-  //   });
-
-  //   window.google.accounts.id.prompt();
-  // };
-
-  // // ---------------- FACEBOOK LOGIN FUNCTION ----------------
-  // const handleFacebookLogin = () => {
-  //   if (!window.FB) return;
-
-  //   window.FB.login(
-  //     async function (response: any) {
-  //       if (response.authResponse) {
-  //         const accessToken = response.authResponse.accessToken;
-
-  //         await axios.post("/api/auth/facebook", { accessToken });
-  //         await axios.post("/api/auth/facebook/token", {
-  //           access_token: accessToken,
-  //         });
-  //         router.push("/dashboard");
-  //       }
-  //     },
-  //     { scope: "email,public_profile" }
-  //   );
-  // };
 
   return (
     <>
@@ -182,6 +114,7 @@ export default function GoogleAuth({ text, title }: GoogleProps) {
           <button
             className="w-full cursor-pointer h-[58px] flex items-center justify-center hover:bg-[#f5f5f5] bg-transparent rounded-[8px] border-[1px] border-[var(--black-white-300)] gap-[10px]"
             onClick={handleGoogleLogin}
+            type="button"
           >
             <span>
               <svg
@@ -221,6 +154,7 @@ export default function GoogleAuth({ text, title }: GoogleProps) {
           <button
             className="w-full cursor-pointer h-[58px] flex items-center justify-center hover:bg-[#f5f5f5] bg-transparent rounded-[8px] border-[1px] border-[var(--black-white-300)] gap-[10px]"
             onClick={handleFacebookLogin}
+            type="button"
           >
             <span>
               <svg
@@ -252,3 +186,4 @@ export default function GoogleAuth({ text, title }: GoogleProps) {
     </>
   );
 }
+

@@ -1,15 +1,62 @@
 "use client";
 import { useState } from "react";
 import { MapPin } from "lucide-react";
-import { IoHeartOutline, IoShareSocialOutline } from "react-icons/io5";
+import { IoHeartOutline, IoShareSocialOutline, IoHeart } from "react-icons/io5";
 import BackButton from "@/components/button/backButton";
 import JobFilter from "@/components/ui/jobFilter";
 import JobDescription from "@/components/ui/jobDescription";
 import ShareMenu from "@/components/dropDown.tsx/shareMenu";
+import { useParams } from "next/navigation";
+import { useJob } from "@/context/jobContext";
+import { useUser } from "@/context/userContext";
 
 export default function Details() {
-  const [OpenMenu, setOpenMenu] = useState(false);
-  const toggleMenu = () => setOpenMenu((prev) => !prev);
+  const params = useParams();
+  const { id } = params;
+  const { jobs, applyForJob, saveJob, unsaveJob } = useJob();
+  const { savedJobs } = useUser();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  // Find the job from saved jobs or all jobs
+  const job = savedJobs.find((j) => String(j.id) === String(id)) ||
+    jobs.find((j) => String(j.id) === String(id));
+
+  const isSaved = savedJobs.some((j) => String(j.id) === String(id));
+
+  const toggleMenu = () => setMenuOpen((prev) => !prev);
+
+  const handleApply = async () => {
+    if (job) {
+      try {
+        await applyForJob(job.id, {});
+      } catch (error) {
+        // Error handled in context
+      }
+    }
+  };
+
+  const handleSaveToggle = async () => {
+    if (!job) return;
+    try {
+      if (isSaved) {
+        await unsaveJob(job.id);
+      } else {
+        await saveJob(job.id);
+      }
+    } catch (error) {
+      // Error handled in context
+    }
+  };
+
+  if (!job) {
+    return (
+      <div className="md:px-6 px-4 dm-font leading-[100%] py-10 text-center">
+        <BackButton />
+        <p className="mt-4">Job not found or loading...</p>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="md:px-6 px-4 dm-font leading-[100%]">
@@ -20,7 +67,7 @@ export default function Details() {
               All Jobs
             </h2>
             <p className="text-[20px] font-[400] pt-2 text-[var(--black-white-900)]">
-              10,000+ jobs
+              {jobs.length}+ jobs
             </p>
           </div>
           <JobFilter />
@@ -28,7 +75,7 @@ export default function Details() {
           <div className="border-b border-[var(--black-white-200)] mt-6">
             <div className="flex justify-between">
               <h2 className="font-[600] text-[16px] text-[var(--black-white-1100)]">
-                Dental Surgeon
+                {job.title}
               </h2>
               <div className="flex items-center gap-[10px]">
                 <div>
@@ -39,34 +86,41 @@ export default function Details() {
                     <IoShareSocialOutline size={22} />
                   </button>
                   <ShareMenu
-                    menuOpen={OpenMenu}
-                    closeMenu={() => setOpenMenu(false)}
+                    menuOpen={menuOpen}
+                    closeMenu={() => setMenuOpen(false)}
                   />
                 </div>
 
-                <div className="bg-[#bbbbbb] w-[25px] h-[25px] rounded-full flex items-center justify-center">
-                  <IoHeartOutline size={20} className="text-white" />
-                </div>
+                <button
+                  onClick={handleSaveToggle}
+                  className="bg-[#bbbbbb] w-[25px] h-[25px] rounded-full flex items-center justify-center hover:bg-[var(--primary-1200)] transition-colors"
+                >
+                  {isSaved ? (
+                    <IoHeart size={20} className="text-[var(--primary-1200)]" />
+                  ) : (
+                    <IoHeartOutline size={20} className="text-white" />
+                  )}
+                </button>
               </div>
             </div>
             <p className="font-[400] text-[14px] text-[var(--black-white-1100)]">
-              Reddington Multi specialist Hospital
+              {job.company}
             </p>
             <span className="inline-block mt-3 px-3 py-1 text-[14px] font-[500] bg-[var(--primary-200)] text-[var(--primary-1200)] rounded-full">
-              Full-Time
+              {job.type}
             </span>
             <div className="flex items-center justify-between text-[var(--black-white-1100)] py-2">
               <div className="flex items-center gap-[7px] font-[400] text-[14px]">
                 <MapPin size={16} />
                 <span className="font-[400] text-[14px] text-[var(--black-white-1100)]">
-                  Lagos
+                  {job.location}
                 </span>
               </div>
-              <div className="font-[400] text-[14px]">2 days ago</div>
+              <div className="font-[400] text-[14px]">{job.date}</div>
             </div>
 
             <div className="flex items-center gap-[5px] py-2">
-              <p className="text-[16px] font-[700]">$50.00 - $70.00</p>
+              <p className="text-[16px] font-[700]">{job.salary}</p>
               <h2 className="text-[12px] font-[500] text-[var(--black-white-700)]">
                 per hour
               </h2>
@@ -74,7 +128,10 @@ export default function Details() {
           </div>
           {/* Apply button */}
           <div className="flex justify-end border-b border-[var(--black-white-200)] py-2">
-            <button className="flex items-center justify-center gap-[5px] bg-[var(--primary-1200)] hover:bg-[#078e63] text-white rounded-[50px] h-[40px] w-[128px] font-[600] text-[16px]">
+            <button
+              onClick={handleApply}
+              className="flex items-center justify-center gap-[5px] bg-[var(--primary-1200)] hover:bg-[#078e63] text-white rounded-[50px] h-[40px] w-[128px] font-[600] text-[16px]"
+            >
               Apply
               <svg
                 width="34"

@@ -6,7 +6,7 @@ import Title from "@/components/ui/title";
 import Link from "next/link";
 
 interface Job {
-  id: number;
+  id: string;
   title: string;
   company: string;
   type: string;
@@ -14,10 +14,11 @@ interface Job {
   date: string;
   salary: string;
 }
+
 export default function Dashboard() {
   const jobs: Job[] = [
     {
-      id: 1,
+      id: "1",
       title: "Surgeon",
       company: "Edoubleone Company",
       type: "Full-Time",
@@ -26,7 +27,7 @@ export default function Dashboard() {
       salary: "$50.00 – $70.00",
     },
     {
-      id: 2,
+      id: "2",
       title: "Surgeon",
       company: "Edoubleone Company",
       type: "Full-Time",
@@ -35,11 +36,36 @@ export default function Dashboard() {
       salary: "$50.00 – $70.00",
     },
   ];
+
+  const notifications = [
+    {
+      id: "1",
+      title: "Application Viewed",
+      message: "Your application for Surgeon was viewed",
+      createdAt: new Date().toISOString(),
+      read: false
+    },
+    {
+      id: "2",
+      title: "New Job Alert",
+      message: "New jobs matching your profile are available",
+      createdAt: new Date().toISOString(),
+      read: true
+    },
+    {
+      id: "3",
+      title: "Profile Update",
+      message: "Please update your profile to increase visibility",
+      createdAt: new Date().toISOString(),
+      read: false
+    }
+  ];
+
   return (
     <div className="px-4 dm-font leading-[100%]">
       <Title text="DashBoard" />
       <div>
-        <DashboardStats />
+        <DashboardStats stats={{ totalAppliedJobs: 0, totalSavedJobs: 0, activeApplications: 0, interviewsScheduled: 0, recentActivity: [] }} />
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-[10px] my-4">
         {/* Left Section */}
@@ -100,9 +126,9 @@ export default function Dashboard() {
           </h2>
 
           <div className="space-y-3">
-            <NotificationCard />
-            <NotificationCard />
-            <NotificationCard />
+            {notifications.map((notification) => (
+              <NotificationCard key={notification.id} notification={notification} />
+            ))}
           </div>
 
           {/* Help Card */}
