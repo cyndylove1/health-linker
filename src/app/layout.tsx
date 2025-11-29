@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { DM_Sans, Poppins } from "next/font/google";
+import { AuthProviderWithQueryClient } from "@/context/authContext";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
+import { RegistrationProvider } from "@/context/registrationContext";
 
 
 const dmSans = DM_Sans({
@@ -28,11 +32,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body suppressHydrationWarning className={`${dmSans.variable} ${poppins.variable}  antialiased`}>
-        <div suppressHydrationWarning>
-          <main className="min-h-[calc(100vh-7rem)]">{children}</main>
-        </div>
+    <html lang="en">
+      <body className={`${dmSans.variable} ${poppins.variable}  antialiased`}>
+        <RegistrationProvider>
+          <AuthProviderWithQueryClient>
+            {children}
+            <ToastContainer
+              limit={1}
+              position="top-right"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop={true}
+              closeOnClick
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+            />
+          </AuthProviderWithQueryClient>
+        </RegistrationProvider>
       </body>
     </html>
   );

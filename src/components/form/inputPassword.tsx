@@ -7,6 +7,7 @@ interface InputPasswordProps {
   showVisibility?: boolean;
   value?: string;
   name?: string;
+  error?: string; // <-- ADD THIS
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   togglePasswordVisibility?: () => void;
   hideIcon?: boolean;
@@ -20,13 +21,16 @@ export default function InputPassword({
   onChange,
   value,
   hideIcon,
+  error,
   name,
   togglePasswordVisibility,
 }: InputPasswordProps) {
   return (
     <div className="">
       <div
-        className={`focus-within:border-[var(--primary-1200)] h-[48px] flex mt-[5px] items-center dm-font rounded-[8px] border-[1px] border-[var(--black-white-300)] px-2 justify-between leading-[100%] ${className}`}
+        className={`focus-within:border-[var(--primary-1200)] h-[48px] flex mt-[5px] items-center dm-font rounded-[8px] border-[1px] 
+        ${error ? "border-red-500" : "border-[var(--black-white-300)]"} 
+        px-2 justify-between leading-[100%] ${className}`}
       >
         <input
           id={id}
@@ -53,6 +57,8 @@ export default function InputPassword({
           </button>
         )}
       </div>
+
+      {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
     </div>
   );
 }
