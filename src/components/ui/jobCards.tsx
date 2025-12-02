@@ -5,23 +5,22 @@ import { MapPin } from "lucide-react";
 import { RxDotsVertical } from "react-icons/rx";
 import Menu from "../dropDown.tsx/menu";
 import DeleteModal from "../modal/deleteModal";
- interface JobItem {
-   id: number;
-   title: string;
-   company: string;
-   type: string;
-   location: string;
-   date: string;
-   salary: string;
-   applied?: string;
-
- }
- interface JobProps {
-   hideIcon?: boolean;
-   hideText?: boolean;
-   icon?: boolean;
-   job: JobItem[] | JobItem;
- }
+interface JobItem {
+  id: number;
+  title: string;
+  company: string;
+  type: string;
+  location: string;
+  date: string;
+  salary: string;
+  applied?: string;
+}
+interface JobProps {
+  hideIcon?: boolean;
+  hideText?: boolean;
+  icon?: boolean;
+  job: JobItem[] | JobItem;
+}
 export default function JobCard({ job, hideIcon, icon, hideText }: JobProps) {
   const [openModalId, setOpenModalId] = useState<number | null>(null);
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
@@ -113,7 +112,6 @@ export default function JobCard({ job, hideIcon, icon, hideText }: JobProps) {
             isOpen={openModalId === item.id}
             onClose={() => setOpenModalId(null)}
             onConfirm={() => {
-              console.log("Deleting job with ID:", item.id);
               setOpenModalId(null);
             }}
           />
