@@ -8,7 +8,7 @@ import CreateJobModal from "@/components/modal/createJobModal";
 import DeleteModal from "@/components/modal/deleteModal";
 import EditJobModal from "@/components/modal/editJobModal";
 
-export default function AppliedJobs() {
+export default function JobAlert() {
   const [openCreate, setOpenCreate] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
