@@ -58,7 +58,7 @@ export default function AppliedJobs() {
             <CalendarIcon />
             <IoIosArrowDown size={20} className="text-[#1C9D75]" />
           </button>
-          <CalendarMenu isOpen={isOpen} openModal={() => { }} />
+          <CalendarMenu isOpen={isOpen} openModal={() => setIsOpen(false)} />
         </div>
 
         {/* Grid of jobs */}

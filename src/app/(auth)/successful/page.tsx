@@ -1,6 +1,6 @@
 import { VscClose } from "react-icons/vsc";
-import CheckIcon from "../../components/icon/checkIcon";
-import Btn from "../../components/button/btn";
+import CheckIcon from "../../../components/icon/checkIcon";
+import Btn from "../../../components/button/btn";
 import Link from "next/link";
 
 

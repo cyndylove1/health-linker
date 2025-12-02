@@ -42,10 +42,10 @@ export default function JobCard({ job, hideIcon, icon, hideText }: JobProps) {
   const handleSaveJob = async (jobId: string, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     setSavingJobId(jobId);
-    const isSaved = savedJobs.some(job => job.id === jobId);
-    
+    const isSaved = savedJobs.some((job) => job.id === jobId);
+
     try {
       if (isSaved) {
         await unsaveJob(jobId);
@@ -53,7 +53,7 @@ export default function JobCard({ job, hideIcon, icon, hideText }: JobProps) {
         await saveJob(jobId);
       }
     } catch (error) {
-      console.error('Save job failed:', error);
+      console.error("Save job failed:", error);
     } finally {
       setSavingJobId(null);
     }
@@ -88,15 +88,22 @@ export default function JobCard({ job, hideIcon, icon, hideText }: JobProps) {
                 onClick={(e) => handleSaveJob(item.id, e)}
                 disabled={savingJobId === item.id}
                 className={`w-[25px] h-[25px] rounded-full flex items-center justify-center transition-all duration-200 ${
-                  savedJobs.some(job => job.id === item.id)
-                    ? 'bg-[var(--primary-1200)] hover:bg-[var(--primary-1000)]' 
-                    : 'bg-[#bbbbbb] hover:bg-[#999999]'
-                } ${savingJobId === item.id ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                  savedJobs.some((job) => job.id === item.id)
+                    ? "bg-[var(--primary-1200)] hover:bg-[var(--primary-1000)]"
+                    : "bg-[#bbbbbb] hover:bg-[#999999]"
+                } ${
+                  savingJobId === item.id
+                    ? "opacity-50 cursor-not-allowed"
+                    : "cursor-pointer"
+                }`}
               >
-                {savedJobs.some(job => job.id === item.id) ? (
+                
+                {savedJobs.some((job) => job.id === item.id) ? (
                   <IoHeart size={20} className="text-white" />
                 ) : (
-                  <IoHeartOutline size={20} className="text-white" />
+                    <div className="bg-[#bbbbbb] w-[25px] h-[25px] rounded-full flex items-center justify-center">
+                <IoHeartOutline size={20} className="text-white" />
+              </div>
                 )}
               </button>
             )}
@@ -137,9 +144,9 @@ export default function JobCard({ job, hideIcon, icon, hideText }: JobProps) {
 
           <div className="flex items-center gap-[5px] py-2">
             <p className="text-[16px] font-[700]">{item.salary}</p>
-            <h2 className="text-[12px] font-[500] text-[var(--black-white-700)]">
+            {/* <h2 className="text-[12px] font-[500] text-[var(--black-white-700)]">
               per hour
-            </h2>
+            </h2> */}
           </div>
           {!hideText && (
             <div className="border-t-[1px] border-[var(--black-white-200)] text-[14px] font-[400] text-[var(--primary-1200)] pt-2">

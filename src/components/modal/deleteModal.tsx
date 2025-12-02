@@ -10,7 +10,7 @@ export default function DeleteModal({ isOpen, onClose, onConfirm }: DeleteModalP
     if (!isOpen) return null;
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-      <div className="bg-white w-[448px] rounded-[24px] p-6 relative leading-[100%] dm-font">
+      <div className="bg-white w-[354px] rounded-[24px] p-6 relative leading-[100%] dm-font">
         {/* Close button */}
         <button
           onClick={onClose}

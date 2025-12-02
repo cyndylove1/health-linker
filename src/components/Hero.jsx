@@ -30,7 +30,7 @@ export default function Hero() {
 
   return (
     <section className="w-full bg-white py-20">
-      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-[65%_35%] gap-10">
+      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-[65%_35%] gap-[20px]">
         {/* ================= LEFT SIDE ================= */}
         <div
           className="rounded-[32px] p-12 text-white relative overflow-hidden min-h-[520px]"

@@ -9,12 +9,13 @@ import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 
 export default function ExploreJobs() {
-  const { jobs, totalJobs, currentPage, totalPages, fetchJobs, isLoading } = useJob();
+  const { jobs, totalJobs, currentPage, totalPages, fetchJobs, isLoading } =
+    useJob();
   const searchParams = useSearchParams();
 
   // Get search parameters if they exist
-  const search = searchParams.get('search');
-  const location = searchParams.get('location');
+  const search = searchParams.get("search");
+  const location = searchParams.get("location");
 
   useEffect(() => {
     // Fetch jobs with search parameters if they exist, otherwise fetch all jobs
@@ -41,7 +42,9 @@ export default function ExploreJobs() {
             {search || location ? "Search Results" : "All Jobs"}
           </h2>
           <p className="text-[20px] font-[400] pt-2 text-[var(--black-white-900)]">
-            {totalJobs > 0 ? `${totalJobs} ${totalJobs === 1 ? 'job' : 'jobs'} found` : "No jobs available"}
+            {totalJobs > 0
+              ? `${totalJobs} ${totalJobs === 1 ? "job" : "jobs"} found`
+              : "No jobs available"}
           </p>
         </div>
 
@@ -55,13 +58,21 @@ export default function ExploreJobs() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[15px] mt-6">
             {jobs.map((job) => (
               <Link key={job.id} href={`/explore-jobs/details/${job.id}`}>
-                <JobCard job={job} hideIcon={false} icon={true} hideText={true} />
+                <JobCard
+                  job={job}
+                  hideIcon={false}
+                  icon={true}
+                  hideText={true}
+                />
               </Link>
             ))}
           </div>
         ) : (
           <div className="py-10 text-center text-gray-500">
-            No jobs found. {search || location ? "Try adjusting your search criteria." : "Check back later for new opportunities."}
+            No jobs found.{" "}
+            {search || location
+              ? "Try adjusting your search criteria."
+              : "Check back later for new opportunities."}
           </div>
         )}
 

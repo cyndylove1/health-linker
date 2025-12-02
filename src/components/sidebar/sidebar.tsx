@@ -3,6 +3,9 @@ import { usePathname } from "next/navigation";
 import { sidebarItems } from "../sidebar/sidebarData";
 import Logo from "../icon/logo";
 import { IoClose } from "react-icons/io5";
+import { useState } from "react";
+import LogOutModaltsx from "../modal/logoutModal";
+import LogOutModal from "../modal/logoutModal";
 
 interface SidebarProps {
   isSidebarOpen: boolean;
@@ -14,6 +17,12 @@ export default function Sidebar({
   toggleSidebar,
 }: SidebarProps) {
   const pathname = usePathname();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+  const handleLogout = () => {
+    setShowLogoutModal(false);
+    console.log("Logged out!");
+  };
 
   return (
     <>
@@ -71,7 +80,10 @@ export default function Sidebar({
           </ul>
 
           {/* Logout */}
-          <div className="flex items-center gap-[12px] px-6 pt-[10rem] pb-4 cursor-pointer mt-auto">
+          <div
+            className="flex items-center gap-[12px] px-6 pt-[10rem] pb-4 cursor-pointer mt-auto"
+            onClick={() => setShowLogoutModal(true)}
+          >
             <span>
               <svg
                 width="20"
@@ -101,6 +113,11 @@ export default function Sidebar({
           </div>
         </aside>
       </div>
+      <LogOutModal
+        open={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={handleLogout}
+      />
     </>
   );
 }

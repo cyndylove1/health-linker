@@ -4,11 +4,12 @@ import { MapPin } from "lucide-react";
 import { IoHeartOutline, IoShareSocialOutline, IoHeart } from "react-icons/io5";
 import BackButton from "@/components/button/backButton";
 import JobFilter from "@/components/ui/jobFilter";
-import JobDescription from "@/components/ui/jobDescription";
+import SavedJobDescription from "@/components/ui/savedJobDescriptions";
 import ShareMenu from "@/components/dropDown.tsx/shareMenu";
 import { useParams } from "next/navigation";
 import { useJob } from "@/context/jobContext";
 import { useUser } from "@/context/userContext";
+
 
 export default function Details() {
   const params = useParams();
@@ -120,10 +121,10 @@ export default function Details() {
             </div>
 
             <div className="flex items-center gap-[5px] py-2">
-              <p className="text-[16px] font-[700]">{job.salary}</p>
-              <h2 className="text-[12px] font-[500] text-[var(--black-white-700)]">
+              <p className="text-[14px] font-[700]">{job.salary}</p>
+              {/* <h2 className="text-[12px] font-[500] text-[var(--black-white-700)]">
                 per hour
-              </h2>
+              </h2> */}
             </div>
           </div>
           {/* Apply button */}
@@ -157,7 +158,7 @@ export default function Details() {
               </svg>
             </button>
           </div>
-          <JobDescription />
+          <SavedJobDescription />
         </div>
       </div>
     </>

@@ -1,6 +1,12 @@
 "use client";
 import apiClient from "../config/axiosConfig";
-import { createContext, ReactNode, useState, useEffect, useContext } from "react";
+import {
+  createContext,
+  ReactNode,
+  useState,
+  useEffect,
+  useContext,
+} from "react";
 import {
   useMutation,
   QueryClient,
@@ -55,7 +61,10 @@ interface AuthContextType {
   verifyResetToken: (token: string) => Promise<any>;
   forgotPassword: (details: { email: string }) => Promise<void>;
   logout: () => void;
-  socialLogin: (provider: "google" | "facebook", token: string) => Promise<void>;
+  socialLogin: (
+    provider: "google" | "facebook",
+    token: string
+  ) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -76,7 +85,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Check for token on mount
   useEffect(() => {
     // Ensure this only runs on client side
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       const token = localStorage.getItem("token");
       const storedUser = localStorage.getItem("user");
       if (token && storedUser) {
@@ -84,7 +93,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
           setIsAuthenticated(true);
           setUser(JSON.parse(storedUser));
         } catch (error) {
-          console.error('Error parsing stored user:', error);
+          console.error("Error parsing stored user:", error);
           // Clear invalid data
           localStorage.removeItem("token");
           localStorage.removeItem("user");
@@ -101,8 +110,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
         const response = await apiClient.post("/api/auth/register", userData);
         return response.data;
       } catch (error: any) {
-        if (error.code === 'ECONNREFUSED' || error.request) {
-          throw new Error('Unable to connect to server. Please check your connection.');
+        if (error.code === "ECONNREFUSED" || error.request) {
+          throw new Error(
+            "Unable to connect to server. Please check your connection."
+          );
         }
         throw error;
       }
@@ -110,27 +121,30 @@ export function AuthProvider({ children }: AuthProviderProps) {
     onSuccess: async (data, variables) => {
       toast.success(data.message);
       // Store email for OTP verification
-      if (typeof window !== 'undefined') {
+      if (typeof window !== "undefined") {
         localStorage.setItem("signupEmail", variables.email);
       }
-      
+
       // Automatically send OTP after successful registration
       try {
         const otpResponse = await apiClient.post("/api/auth/send-otp", {
-          destination: variables.email
+          destination: variables.email,
         });
-        
+
         // Store request_id as otpId and expires_in
-        if (typeof window !== 'undefined') {
+        if (typeof window !== "undefined") {
           if (otpResponse.data.request_id) {
             localStorage.setItem("otpId", otpResponse.data.request_id);
           }
           if (otpResponse.data.expires_in) {
-            localStorage.setItem("otpExpiresIn", String(otpResponse.data.expires_in));
+            localStorage.setItem(
+              "otpExpiresIn",
+              String(otpResponse.data.expires_in)
+            );
             localStorage.setItem("otpStartTime", String(Date.now()));
           }
         }
-        
+
         toast.success("OTP sent to your email!");
         router.push("/otp-verify");
       } catch (otpError: any) {
@@ -140,7 +154,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
     },
     onError: (error: any) => {
-      toast.error(error.message || error.response?.data?.message || "Signup failed");
+      toast.error(
+        error.message || error.response?.data?.message || "Signup failed"
+      );
     },
   });
 
@@ -157,7 +173,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     onSuccess: (data) => {
       toast.success(data.message);
       // Store request_id as otpId and expires_in for OTP verification
-      if (typeof window !== 'undefined') {
+      if (typeof window !== "undefined") {
         if (data.request_id) {
           localStorage.setItem("otpId", data.request_id);
         }
@@ -184,7 +200,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     },
     onSuccess: (data) => {
       toast.success("OTP Verified Successfully");
-      if (typeof window !== 'undefined') {
+      if (typeof window !== "undefined") {
         // Clear OTP data
         localStorage.removeItem("signupEmail");
         localStorage.removeItem("otpId");
@@ -196,12 +212,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
           localStorage.setItem("token", data.token);
           localStorage.setItem("authToken", data.token); // Store with both keys for compatibility
         }
-        
+
         if (data.user) {
           localStorage.setItem("user", JSON.stringify(data.user));
           setUser(data.user);
         }
-        
+
         setIsAuthenticated(true);
       }
 
@@ -209,12 +225,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
       router.push("/dashboard");
     },
     onError: (error: any) => {
-      const errorMessage = error.response?.data?.message || 
-                          (error.response?.data?.code ? error.response.data.code[0] : "Invalid OTP");
+      const errorMessage =
+        error.response?.data?.message ||
+        (error.response?.data?.code
+          ? error.response.data.code[0]
+          : "Invalid OTP");
       console.error("OTP Verification Error:", {
         message: errorMessage,
         status: error.response?.status,
-        data: error.response?.data
+        data: error.response?.data,
       });
       toast.error(errorMessage);
     },
@@ -240,7 +259,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     },
     onSuccess: (data) => {
       toast.success(data.message);
-      if (typeof window !== 'undefined') {
+      if (typeof window !== "undefined") {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
       }
@@ -260,14 +279,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Forgot Password
   const forgotPasswordMutation = useMutation({
     mutationFn: async (details: { email: string }) => {
-      const response = await apiClient.post("/api/auth/forgot-password", details);
+      const response = await apiClient.post(
+        "/api/auth/forgot-password",
+        details
+      );
       return response.data;
     },
     onSuccess: (data) => {
-      toast.success(data.message || "If an account with this email exists, a password reset link has been sent");
+      toast.success(
+        data.message ||
+          "If an account with this email exists, a password reset link has been sent"
+      );
     },
     onError: (error: any) => {
-      const errorMessage = error.response?.data?.message || "Failed to send reset email";
+      const errorMessage =
+        error.response?.data?.message || "Failed to send reset email";
       toast.error(errorMessage);
       console.error("Forgot password error:", error.response?.data);
     },
@@ -284,11 +310,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Verify Reset Token
   const verifyResetTokenMutation = useMutation({
     mutationFn: async (token: string) => {
-      const response = await apiClient.post("/api/auth/verify-reset-token", { token });
+      const response = await apiClient.post("/api/auth/verify-reset-token", {
+        token,
+      });
       return response.data;
     },
     onError: (error: any) => {
-      const errorMessage = error.response?.data?.message || "Invalid or expired reset token";
+      const errorMessage =
+        error.response?.data?.message || "Invalid or expired reset token";
       console.error("Token verification error:", error.response?.data);
       throw error;
     },
@@ -303,7 +332,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const result = await verifyResetTokenMutation.mutateAsync(token);
       return result;
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || "Invalid or expired reset token";
+      const errorMessage =
+        error.response?.data?.message || "Invalid or expired reset token";
       toast.error(errorMessage);
       throw error;
     }
@@ -319,8 +349,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
       toast.success(data.message || "Password has been reset successfully");
     },
     onError: (error: any) => {
-      const errorMessage = error.response?.data?.message || 
-                          (error.response?.data?.code ? error.response.data.code[0] : "Failed to reset password");
+      const errorMessage =
+        error.response?.data?.message ||
+        (error.response?.data?.code
+          ? error.response.data.code[0]
+          : "Failed to reset password");
       toast.error(errorMessage);
       console.error("Reset password error:", error.response?.data);
     },
@@ -344,7 +377,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       toast.error("Passwords do not match");
       return;
     }
-    
+
     try {
       await resetPasswordMutation.mutateAsync(data);
       // Redirect to login after successful reset
@@ -358,19 +391,25 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   // Social Login
   const socialLoginMutation = useMutation({
-    mutationFn: async ({ provider, token }: { provider: string; token: string }) => {
-      const endpoint = provider === 'google' ? '/api/auth/google' : '/api/auth/facebook';
+    mutationFn: async ({
+      provider,
+      token,
+    }: {
+      provider: string;
+      token: string;
+    }) => {
+      const endpoint =
+        provider === "google" ? "/api/auth/google" : "/api/auth/facebook";
       // Adjust payload based on provider if needed, assuming simple token pass for now
-      const payload = provider === 'google'
-        ? { googleToken: token }
-        : { accessToken: token };
+      const payload =
+        provider === "google" ? { googleToken: token } : { accessToken: token };
 
       const response = await apiClient.post(endpoint, payload);
       return response.data;
     },
     onSuccess: (data) => {
       toast.success(data.message);
-      if (typeof window !== 'undefined') {
+      if (typeof window !== "undefined") {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
       }
@@ -383,12 +422,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
     },
   });
 
-  const socialLogin = async (provider: "google" | "facebook", token: string) => {
+  const socialLogin = async (
+    provider: "google" | "facebook",
+    token: string
+  ) => {
     await socialLoginMutation.mutateAsync({ provider, token });
   };
 
   const logout = () => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
     }

@@ -22,6 +22,7 @@ export interface UserProfile {
     name?: string;
     phone?: string;
     location?: string;
+    country?: string;
     bio?: string;
     avatarUrl?: string | null;
     skills?: string[] | null;
