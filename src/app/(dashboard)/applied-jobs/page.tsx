@@ -6,22 +6,14 @@ import Title from "@/components/ui/title";
 import Pagination from "@/components/ui/pagination";
 import CalendarIcon from "@/components/icon/calendarIcon";
 import CalendarMenu from "@/components/dropDown.tsx/calendarMenu";
-
-interface Job {
-  id: number;
-  title: string;
-  company: string;
-  type: string;
-  location: string;
-  date: string;
-  salary: string;
-  applied: string;
-}
+import { useUser } from "@/context/userContext";
+import Link from "next/link";
 
 export default function AppliedJobs() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { appliedJobs, isLoadingStats } = useUser();
 
   const toggleMenu = () => setIsOpen((prev) => !prev);
 
@@ -38,128 +30,13 @@ export default function AppliedJobs() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const jobs: Job[] = [
-    {
-      id: 1,
-      title: "Surgeon",
-      company: "Edoubleone Company",
-      type: "Full-Time",
-      location: "Remote, USA",
-      date: "2 days ago",
-      salary: "$50.00 – $70.00",
-      applied: "Applied on October 20th",
-    },
-    {
-      id: 2,
-      title: "Surgeon",
-      company: "Edoubleone Company",
-      type: "Full-Time",
-      location: "Remote, USA",
-      date: "2 days ago",
-      salary: "$50.00 – $70.00",
-      applied: "Applied on October 20th",
-    },
-    {
-      id: 3,
-      title: "Surgeon",
-      company: "Edoubleone Company",
-      type: "Full-Time",
-      location: "Remote, USA",
-      date: "2 days ago",
-      salary: "$50.00 – $70.00",
-      applied: "Applied on October 20th",
-    },
-    {
-      id: 4,
-      title: "Surgeon",
-      company: "Edoubleone Company",
-      type: "Full-Time",
-      location: "Remote, USA",
-      date: "2 days ago",
-      salary: "$50.00 – $70.00",
-      applied: "Applied on October 20th",
-    },
-    {
-      id: 5,
-      title: "Surgeon",
-      company: "Edoubleone Company",
-      type: "Full-Time",
-      location: "Remote, USA",
-      date: "2 days ago",
-      salary: "$50.00 – $70.00",
-      applied: "Applied on October 20th",
-    },
-    {
-      id: 6,
-      title: "Surgeon",
-      company: "Edoubleone Company",
-      type: "Full-Time",
-      location: "Remote, USA",
-      date: "2 days ago",
-      salary: "$50.00 – $70.00",
-      applied: "Applied on October 20th",
-    },
-    {
-      id: 7,
-      title: "Surgeon",
-      company: "Edoubleone Company",
-      type: "Full-Time",
-      location: "Remote, USA",
-      date: "2 days ago",
-      salary: "$50.00 – $70.00",
-      applied: "Applied on October 20th",
-    },
-    {
-      id: 8,
-      title: "Surgeon",
-      company: "Edoubleone Company",
-      type: "Full-Time",
-      location: "Remote, USA",
-      date: "2 days ago",
-      salary: "$50.00 – $70.00",
-      applied: "Applied on October 20th",
-    },
-    {
-      id: 9,
-      title: "Surgeon",
-      company: "Edoubleone Company",
-      type: "Full-Time",
-      location: "Remote, USA",
-      date: "2 days ago",
-      salary: "$50.00 – $70.00",
-      applied: "Applied on October 20th",
-    },
-    {
-      id: 10,
-      title: "Surgeon",
-      company: "Edoubleone Company",
-      type: "Full-Time",
-      location: "Remote, USA",
-      date: "2 days ago",
-      salary: "$50.00 – $70.00",
-      applied: "Applied on October 20th",
-    },
-    {
-      id: 11,
-      title: "Surgeon",
-      company: "Edoubleone Company",
-      type: "Full-Time",
-      location: "Remote, USA",
-      date: "2 days ago",
-      salary: "$50.00 – $70.00",
-      applied: "Applied on October 20th",
-    },
-    {
-      id: 12,
-      title: "Surgeon",
-      company: "Edoubleone Company",
-      type: "Full-Time",
-      location: "Remote, USA",
-      date: "2 days ago",
-      salary: "$50.00 – $70.00",
-      applied: "Applied on October 20th",
-    },
-  ];
+  // Pagination logic
+  const itemsPerPage = 12;
+  const totalPages = Math.ceil(appliedJobs.length / itemsPerPage);
+  const currentJobs = appliedJobs.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
     <div className="md:px-6 px-4 dm-font leading-[100%] relative">
@@ -171,7 +48,7 @@ export default function AppliedJobs() {
               Your applied jobs
             </h2>
             <p className="text-[20px] font-[400] pt-2 text-[var(--black-white-900)]">
-              47 jobs
+              {appliedJobs.length} jobs
             </p>
           </div>
           <button
@@ -185,24 +62,37 @@ export default function AppliedJobs() {
         </div>
 
         {/* Grid of jobs */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[15px] mt-6">
-          {jobs.map((job) => (
-            <div key={job.id}>
-              <JobCard
-                job={job}
-                hideIcon={true}
-                icon={false}
-                hideText={false}
-              />
-            </div>
-          ))}
-        </div>
+        {isLoadingStats ? (
+          <div className="py-10 text-center">Loading applied jobs...</div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[15px] mt-6">
+            {currentJobs.map((job) => (
+              <div key={job.id}>
+                <Link href={`/explore-jobs/details/${job.id}`}>
+                  <JobCard
+                    job={job}
+                    hideIcon={true}
+                    icon={false}
+                    hideText={false}
+                  />
+                </Link>
+              </div>
+            ))}
+            {appliedJobs.length === 0 && (
+              <div className="col-span-full text-center py-10">
+                No applied jobs found.
+              </div>
+            )}
+          </div>
+        )}
 
-        <Pagination
-          currentPage={currentPage}
-          totalPages={10}
-          onPageChange={(page) => setCurrentPage(page)}
-        />
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={(page) => setCurrentPage(page)}
+          />
+        )}
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { MapPin } from "lucide-react";
 import Btn from "@/components/button/btn";
 import Title from "@/components/ui/title";

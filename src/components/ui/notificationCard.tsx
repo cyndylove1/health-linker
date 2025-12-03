@@ -1,6 +1,8 @@
-export default function NotificationCard  ()  {
+import { Notification } from "@/context/notificationContext";
+
+export default function NotificationCard({ notification }: { notification: Notification }) {
   return (
-    <div className="flex items-start gap-3 p-4 border-[1px] border-[var(--black-white-200)] rounded-[16px] bg-[#f9f9f9] dm-font leading-[100%]">
+    <div className={`flex items-start gap-3 p-4 border-[1px] border-[var(--black-white-200)] rounded-[16px] ${notification.read ? 'bg-white' : 'bg-[#f9f9f9]'} dm-font leading-[100%]`}>
       <div className="">
         {/* icon */}
         <span className="">
@@ -66,10 +68,10 @@ export default function NotificationCard  ()  {
       </div>
       <div>
         <p className="text-[16px] font-[500] text-[var(--black-white-800)]">
-          Finish setting up your profile
+          {notification.title}
         </p>
         <p className="text-[var(--black-white-700)] text-[14px] font-[400] pt-[5px]">
-          Last Wednesday at 9:42 AM
+          {new Date(notification.createdAt).toLocaleDateString()}
         </p>
       </div>
     </div>

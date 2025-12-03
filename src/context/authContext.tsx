@@ -1,6 +1,12 @@
 "use client";
 import apiClient from "../config/axiosConfig";
-import { createContext, ReactNode } from "react";
+import {
+  createContext,
+  ReactNode,
+  useState,
+  useEffect,
+  useContext,
+} from "react";
 import {
   useMutation,
   QueryClient,
@@ -9,6 +15,14 @@ import {
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
+export interface User {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  profilePicture?: string;
+}
+
 export interface RegisterData {
   firstName: string;
   lastName: string;
@@ -16,10 +30,11 @@ export interface RegisterData {
   password: string;
 }
 export interface OTPData {
-  channel: "email";
+  channel: "email" | "sms";
   destination: string;
-  purpose: "register";
-  otp: string;
+  purpose: "register" | "login_mfa" | "password_reset";
+  otp?: string; // For verification
+  otpId?: string; // For verification
 }
 
 export interface LoginData {
@@ -28,20 +43,28 @@ export interface LoginData {
 }
 
 export interface ResetPasswordData {
-  hashed_password: string;
-  confirm_password: string;
+  token: string;
+  email: string;
+  newPassword: string;
+  newPassword_confirmation: string;
 }
 
 interface AuthContextType {
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
   loginUser: (credentials: LoginData) => Promise<void>;
   registerUser: (userData: RegisterData) => Promise<void>;
-  verifyOTP: (otpData: OTPData) => Promise<void>;
-  //   resetPassword: (data: ResetPasswordData) => Promise<void>;
+  verifyOTP: (otpData: any) => Promise<void>;
+  sendOTP: (otpData: OTPData) => Promise<any>;
+  resetPassword: (data: ResetPasswordData) => Promise<void>;
+  verifyResetToken: (token: string) => Promise<any>;
   forgotPassword: (details: { email: string }) => Promise<void>;
-  //   resendEmail: () => Promise<void>;
-  //   socialLogin: (provider: "google" | "facebook") => Promise<void>;
-  //   userEmail: string;
-  //   setUserEmail: (email: string) => void;
+  logout: () => void;
+  socialLogin: (
+    provider: "google" | "facebook",
+    token: string
+  ) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -55,22 +78,85 @@ const queryClient = new QueryClient();
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Check for token on mount
+  useEffect(() => {
+    // Ensure this only runs on client side
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      const storedUser = localStorage.getItem("user");
+      if (token && storedUser) {
+        try {
+          setIsAuthenticated(true);
+          setUser(JSON.parse(storedUser));
+        } catch (error) {
+          console.error("Error parsing stored user:", error);
+          // Clear invalid data
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+        }
+      }
+    }
+    setIsLoading(false);
+  }, []);
 
   // register Mutation
   const registerMutation = useMutation({
     mutationFn: async (userData: RegisterData) => {
-      const response = await apiClient.post("/api/auth/register", userData);
-      return response.data;
+      try {
+        const response = await apiClient.post("/api/auth/register", userData);
+        return response.data;
+      } catch (error: any) {
+        if (error.code === "ECONNREFUSED" || error.request) {
+          throw new Error(
+            "Unable to connect to server. Please check your connection."
+          );
+        }
+        throw error;
+      }
     },
-    onSuccess: (data, variables) => {
+    onSuccess: async (data, variables) => {
       toast.success(data.message);
+      // Store email for OTP verification
+      if (typeof window !== "undefined") {
+        localStorage.setItem("signupEmail", variables.email);
+      }
 
-      // Store email
-      localStorage.setItem("signupEmail", variables.email);
-      router.push("/otp-verify");
+      // Automatically send OTP after successful registration
+      try {
+        const otpResponse = await apiClient.post("/api/auth/send-otp", {
+          destination: variables.email,
+        });
+
+        // Store request_id as otpId and expires_in
+        if (typeof window !== "undefined") {
+          if (otpResponse.data.request_id) {
+            localStorage.setItem("otpId", otpResponse.data.request_id);
+          }
+          if (otpResponse.data.expires_in) {
+            localStorage.setItem(
+              "otpExpiresIn",
+              String(otpResponse.data.expires_in)
+            );
+            localStorage.setItem("otpStartTime", String(Date.now()));
+          }
+        }
+
+        toast.success("OTP sent to your email!");
+        router.push("/otp-verify");
+      } catch (otpError: any) {
+        toast.error(otpError.response?.data?.message || "Failed to send OTP");
+        // Still redirect to OTP page but let user resend manually
+        router.push("/otp-verify");
+      }
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message || "Signup failed");
+      toast.error(
+        error.message || error.response?.data?.message || "Signup failed"
+      );
     },
   });
 
@@ -78,38 +164,111 @@ export function AuthProvider({ children }: AuthProviderProps) {
     await registerMutation.mutateAsync(userData);
   };
 
-  // OTP verification mutation
-  const otpMutation = useMutation({
+  // Send OTP Mutation
+  const sendOTPMutation = useMutation({
     mutationFn: async (otpData: OTPData) => {
       const response = await apiClient.post("/api/auth/send-otp", otpData);
       return response.data;
     },
-    onSuccess: () => {
-      toast.success("Otp Verified Successfully");
-      localStorage.removeItem("signupEmail");
-      router.push("/successful");
+    onSuccess: (data) => {
+      toast.success(data.message);
+      // Store request_id as otpId and expires_in for OTP verification
+      if (typeof window !== "undefined") {
+        if (data.request_id) {
+          localStorage.setItem("otpId", data.request_id);
+        }
+        if (data.expires_in) {
+          localStorage.setItem("otpExpiresIn", String(data.expires_in));
+          localStorage.setItem("otpStartTime", String(Date.now()));
+        }
+      }
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message);
+      toast.error(error.response?.data?.message || "Failed to send OTP");
     },
   });
 
-  const verifyOTP = async (otpData: OTPData) => {
-    await otpMutation.mutateAsync(otpData);
+  const sendOTP = async (otpData: OTPData) => {
+    return await sendOTPMutation.mutateAsync(otpData);
+  };
+
+  // OTP verification mutation
+  const verifyOTPMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await apiClient.post("/api/auth/verify-otp", data);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      toast.success("OTP Verified Successfully");
+      if (typeof window !== "undefined") {
+        // Clear OTP data
+        localStorage.removeItem("signupEmail");
+        localStorage.removeItem("otpId");
+        localStorage.removeItem("otpExpiresIn");
+        localStorage.removeItem("otpStartTime");
+
+        // Save authentication token and user info per the API spec
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("authToken", data.token); // Store with both keys for compatibility
+        }
+
+        if (data.user) {
+          localStorage.setItem("user", JSON.stringify(data.user));
+          setUser(data.user);
+        }
+
+        setIsAuthenticated(true);
+      }
+
+      // Redirect to dashboard after successful OTP verification
+      router.push("/dashboard");
+    },
+    onError: (error: any) => {
+      const errorMessage =
+        error.response?.data?.message ||
+        (error.response?.data?.code
+          ? error.response.data.code[0]
+          : "Invalid OTP");
+      console.error("OTP Verification Error:", {
+        message: errorMessage,
+        status: error.response?.status,
+        data: error.response?.data,
+      });
+      toast.error(errorMessage);
+    },
+  });
+
+  const verifyOTP = async (data: { otpId: string; code: string }) => {
+    if (!data.otpId) {
+      toast.error("OTP session not found. Please request a new OTP.");
+      return;
+    }
+    if (!data.code || data.code.length !== 6) {
+      toast.error("OTP must be exactly 6 digits");
+      return;
+    }
+    await verifyOTPMutation.mutateAsync(data);
   };
 
   // login mutation
   const loginMutation = useMutation({
-    mutationFn: async (credentials: Partial<LoginData>) => {
+    mutationFn: async (credentials: LoginData) => {
       const response = await apiClient.post("/api/auth/login", credentials);
       return response.data;
     },
     onSuccess: (data) => {
       toast.success(data.message);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+      }
+      setUser(data.user);
+      setIsAuthenticated(true);
       router.push("/dashboard");
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message);
+      toast.error(error.response?.data?.message || "Login failed");
     },
   });
 
@@ -117,87 +276,196 @@ export function AuthProvider({ children }: AuthProviderProps) {
     await loginMutation.mutateAsync(credentials);
   };
 
-  // ResetPassword mutation
-  //   const ResetPasswordMutation = useMutation({
-  //     mutationFn: async (data: Partial<ResetPasswordData>) => {
-  //       const response = await apiClient.patch(
-  //         "/api/v1/user/password/reset/new_password",
-  //         data
-  //       );
-  //       return response.data;
-  //     },
-  //     onSuccess: (data) => {
-  //       toast.success(data.message);
-  //       router.push("/login");
-  //     },
-  //     onError: (error: any) => {
-  //       toast.error(error.response?.data?.detail);
-  //     },
-  //   });
-  //   const resetPassword = async (data: Partial<ResetPasswordData>) => {
-  //     await ResetPasswordMutation.mutateAsync(data);
-  //   };
-
-  //   // resend email mutation
-  //   const ResendEmailMutation = useMutation({
-  //     mutationFn: async (email: string) => {
-  //       const response = await apiClient.post(
-  //         "/api/v1/auth/resend_verification_email",
-  //         { email }
-  //       );
-  //       return response.data;
-  //     },
-  //     onSuccess: (data) => {
-  //       toast.success(data.message);
-  //     },
-  //     onError: (error: any) => {
-  //       toast.error(error.response?.data?.detail);
-  //     },
-  //   });
-  //   const resendEmail = async () => {
-  //     if (!userEmail) {
-  //       toast.error("Email not found. Please");
-  //       return;
-  //     }
-  //     await ResendEmailMutation.mutateAsync(userEmail);
-  //   };
-
-  // forgotPassword mutation
+  // Forgot Password
   const forgotPasswordMutation = useMutation({
     mutationFn: async (details: { email: string }) => {
       const response = await apiClient.post(
-        `/api/auth/password/forgot?email=${encodeURIComponent(details.email)}`
+        "/api/auth/forgot-password",
+        details
       );
       return response.data;
     },
     onSuccess: (data) => {
-      toast.success(data.message);
-      router.push("/reset-password");
+      toast.success(
+        data.message ||
+          "If an account with this email exists, a password reset link has been sent"
+      );
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message);
+      const errorMessage =
+        error.response?.data?.message || "Failed to send reset email";
+      toast.error(errorMessage);
+      console.error("Forgot password error:", error.response?.data);
     },
   });
 
   const forgotPassword = async (details: { email: string }) => {
+    if (!details.email || !details.email.trim()) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
     await forgotPasswordMutation.mutateAsync(details);
   };
 
+  // Verify Reset Token
+  const verifyResetTokenMutation = useMutation({
+    mutationFn: async (token: string) => {
+      const response = await apiClient.post("/api/auth/verify-reset-token", {
+        token,
+      });
+      return response.data;
+    },
+    onError: (error: any) => {
+      const errorMessage =
+        error.response?.data?.message || "Invalid or expired reset token";
+      console.error("Token verification error:", error.response?.data);
+      throw error;
+    },
+  });
+
+  const verifyResetToken = async (token: string) => {
+    if (!token || !token.trim()) {
+      toast.error("Reset token is missing");
+      throw new Error("Reset token is missing");
+    }
+    try {
+      const result = await verifyResetTokenMutation.mutateAsync(token);
+      return result;
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message || "Invalid or expired reset token";
+      toast.error(errorMessage);
+      throw error;
+    }
+  };
+
+  // Reset Password
+  const resetPasswordMutation = useMutation({
+    mutationFn: async (data: ResetPasswordData) => {
+      const response = await apiClient.post("/api/auth/reset-password", data);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      toast.success(data.message || "Password has been reset successfully");
+    },
+    onError: (error: any) => {
+      const errorMessage =
+        error.response?.data?.message ||
+        (error.response?.data?.code
+          ? error.response.data.code[0]
+          : "Failed to reset password");
+      toast.error(errorMessage);
+      console.error("Reset password error:", error.response?.data);
+    },
+  });
+
+  const resetPassword = async (data: ResetPasswordData) => {
+    // Validation
+    if (!data.token || !data.token.trim()) {
+      toast.error("Reset token is missing");
+      return;
+    }
+    if (!data.email || !data.email.trim()) {
+      toast.error("Email is required");
+      return;
+    }
+    if (!data.newPassword || data.newPassword.length < 8) {
+      toast.error("Password must be at least 8 characters");
+      return;
+    }
+    if (data.newPassword !== data.newPassword_confirmation) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    try {
+      await resetPasswordMutation.mutateAsync(data);
+      // Redirect to login after successful reset
+      setTimeout(() => {
+        router.push("/login");
+      }, 2000);
+    } catch (error) {
+      console.error("Password reset failed:", error);
+    }
+  };
+
+  // Social Login
+  const socialLoginMutation = useMutation({
+    mutationFn: async ({
+      provider,
+      token,
+    }: {
+      provider: string;
+      token: string;
+    }) => {
+      const endpoint =
+        provider === "google" ? "/api/auth/google" : "/api/auth/facebook";
+      // Adjust payload based on provider if needed, assuming simple token pass for now
+      const payload =
+        provider === "google" ? { googleToken: token } : { accessToken: token };
+
+      const response = await apiClient.post(endpoint, payload);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      toast.success(data.message);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+      }
+      setUser(data.user);
+      setIsAuthenticated(true);
+      router.push("/dashboard");
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || "Social login failed");
+    },
+  });
+
+  const socialLogin = async (
+    provider: "google" | "facebook",
+    token: string
+  ) => {
+    await socialLoginMutation.mutateAsync({ provider, token });
+  };
+
+  const logout = () => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+    }
+    setUser(null);
+    setIsAuthenticated(false);
+    router.push("/login");
+    toast.info("Logged out successfully");
+  };
+
   const contextValue: AuthContextType = {
+    user,
+    isAuthenticated,
+    isLoading,
     loginUser,
     registerUser,
     verifyOTP,
-    // resetPassword,
+    sendOTP,
+    resetPassword,
+    verifyResetToken,
     forgotPassword,
-    // socialLogin,
-    // resendEmail,
-    // userEmail,
-    // setUserEmail,
+    socialLogin,
+    logout,
   };
 
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
 }
 
 // Create a wrapper component that provides the QueryClient

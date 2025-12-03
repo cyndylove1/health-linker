@@ -2,26 +2,83 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { toast } from "react-toastify";
+import { useAuth } from "@/context/authContext";
+import { useRouter } from "next/navigation";
 
 export default function AlertSignup() {
   const [jobTitle, setJobTitle] = useState("");
   const [location, setLocation] = useState("");
   const [frequency, setFrequency] = useState("daily");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { isAuthenticated } = useAuth();
+  const router = useRouter();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validation
+    if (!jobTitle.trim()) {
+      toast.error("Please enter a job title");
+      return;
+    }
+
+    if (!location.trim()) {
+      toast.error("Please enter a location");
+      return;
+    }
+
+    // Check if user is authenticated
+    if (!isAuthenticated) {
+      toast.info("Please sign up to set job alerts");
+      router.push("/sign-up");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Save job alert to localStorage with timestamp
+      const jobAlerts = JSON.parse(localStorage.getItem("jobAlerts") || "[]");
+      
+      const newAlert = {
+        id: Date.now().toString(),
+        jobTitle: jobTitle.trim(),
+        location: location.trim(),
+        frequency,
+        createdAt: new Date().toISOString(),
+      };
+
+      jobAlerts.push(newAlert);
+      localStorage.setItem("jobAlerts", JSON.stringify(jobAlerts));
+
+      toast.success("Job alert created successfully! You will receive notifications based on your preferences.");
+
+      // Reset form
+      setJobTitle("");
+      setLocation("");
+      setFrequency("daily");
+    } catch (error) {
+      toast.error("Failed to create job alert. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <section
       className="w-full py-24 bg-cover bg-center bg-no-repeat"
       style={{
-        backgroundImage: "url('/signup-background.png')", 
-        backgroundAttachment: "fixed", 
+        backgroundImage: "url('/signup-background.png')",
+        backgroundAttachment: "fixed",
       }}
     >
       <div className="max-w-7xl mx-auto px-6 text-center">
 
         {/* Heading – FIXED to match Figma */}
         <h2 className="text-[40px] md:text-[45px] font-medium tracking-wide text-white mb-3 leading-[1.15]">
-  Sign up today for daily job alerts
-</h2>
+          Sign up today for daily job alerts
+        </h2>
 
 
         <p className="text-sm text-white/80 mb-12">
@@ -46,7 +103,7 @@ export default function AlertSignup() {
             </div>
 
             {/* Form */}
-            <form className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-5">
 
               {/* Job Title */}
               <input
@@ -89,10 +146,11 @@ export default function AlertSignup() {
 
               {/* Button */}
               <button
-                type="button"
-                className="w-full bg-[#1C9D75] text-white rounded-full py-3 text-sm font-medium shadow-md hover:bg-[#178764] transition"
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full bg-[#1C9D75] text-white rounded-full py-3 text-sm font-medium shadow-md hover:bg-[#178764] transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Set Alert
+                {isSubmitting ? "Setting Alert..." : "Set Alert"}
               </button>
             </form>
           </div>

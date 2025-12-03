@@ -24,11 +24,10 @@ export default function AboutPage() {
 
         {/* FIXED TEXT POSITION LIKE 1st IMAGE */}
         <div className="absolute left-10 top-24 md:top-32 max-w-[480px] text-white">
-          <p className="text-sm opacity-90 mb-2">About Health Linker</p>
+          <p className="text-sm opacity-90 mb-2">About HealthLinker</p>
 
           <h1 className="text-3xl md:text-4xl font-bold leading-snug">
-            Lorem ipsum dolor sit amet consectetur.  
-            Amet mauris vulputate cras arcu vulputate et.
+            Connecting Healthcare Professionals with Opportunities
           </h1>
         </div>
       </section>
@@ -38,12 +37,10 @@ export default function AboutPage() {
         <div>
           <p className="text-sm text-gray-500 mb-1">Our Mission</p>
 
-          <h3 className="text-xl font-semibold mb-4">Mission Statement</h3>
+          <h3 className="text-xl font-semibold mb-4">Empowering Healthcare Careers</h3>
 
           <p className="text-sm text-gray-600 leading-relaxed">
-            Lorem ipsum dolor sit amet consectetur. A egestas pretium aliquam integer
-            volutpat amet eget. Vitae amet eget morbi nunc laoreet tincidunt varius.
-            Tortor sit feugiat id enim massa scelerisque pretium arcu sed.
+            HealthLinker is dedicated to connecting qualified healthcare professionals with rewarding career opportunities. We understand the unique challenges healthcare workers face in finding the right positions that match their expertise, values, and career goals. Our mission is to streamline the job search process for nurses, doctors, therapists, technicians, and other healthcare professionals, making it easier to find positions that make a real difference in people's lives.
           </p>
         </div>
 
@@ -70,11 +67,10 @@ export default function AboutPage() {
         <div>
           <p className="text-sm text-gray-500 mb-1">Our Vision</p>
 
-          <h3 className="text-xl font-semibold mb-4">Vision Statement</h3>
+          <h3 className="text-xl font-semibold mb-4">Building the Future of Healthcare Recruitment</h3>
 
           <p className="text-sm text-gray-600 leading-relaxed">
-            Lorem ipsum dolor sit amet consectetur. A gravida varius eget dignissim
-            volutpat sollicitudin nibh lorem bibendum.
+            We envision a world where healthcare professionals can easily discover meaningful employment opportunities that align with their skills and aspirations. By leveraging technology and deep industry knowledge, HealthLinker aims to be the leading platform for healthcare workforce solutions, bridging the gap between talented professionals and organizations that need them.
           </p>
         </div>
       </section>
@@ -89,11 +85,11 @@ export default function AboutPage() {
   }}
 >
   <h2 className="text-white text-3xl md:text-5xl font-semibold mb-2">
-    YouTube videos
+    Why Choose HealthLinker?
   </h2>
 
   <p className="text-white/80 text-m mb-[-50px]">
-    Lorem ipsum dolor sit dolor amec avous.
+    Learn why thousands of healthcare professionals trust HealthLinker for their career growth.
   </p>
 
   <div className="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-[20_100px_300px_rgba(0,0,0,0.15)]">

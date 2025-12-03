@@ -5,7 +5,7 @@ import Btn from "../button/btn";
 export default function OTPVerification() {
   const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
   const inputsRef = useRef<HTMLInputElement[]>([]);
-  const [timer, setTimer] = useState<number>(20);
+  const [timer, setTimer] = useState<number>(1800); // 30 minutes in seconds
 
   // Timer countdown
   useEffect(() => {
@@ -41,7 +41,7 @@ export default function OTPVerification() {
   // Resend OTP
   const handleResend = () => {
     setOtp(new Array(6).fill(""));
-    setTimer(20);
+    setTimer(1800); // Reset to 30 minutes
     inputsRef.current[0]?.focus();
   };
 
@@ -72,9 +72,9 @@ export default function OTPVerification() {
 
         <div className="text-[var(--secondary-1200)] font-[400] text-[14px] mb-6">
           {timer > 0 ? (
-            <span>0:{timer < 10 ? `0${timer}` : timer}</span>
+            <span>{Math.floor(timer / 60)}:{(timer % 60) < 10 ? `0${timer % 60}` : timer % 60}</span>
           ) : (
-            <span className="">0.00</span>
+            <span className="">0:00</span>
           )}
         </div>
 

@@ -11,6 +11,7 @@ type Props = {
   options: Option[];
   placeholder?: string;
   className?: string;
+  disabled?: boolean; 
 };
 
 export default function CustomSelect({
@@ -19,6 +20,7 @@ export default function CustomSelect({
   onChange,
   options,
   placeholder,
+   disabled ,
   className = "",
 }: Props) {
   return (
@@ -26,6 +28,7 @@ export default function CustomSelect({
       <select
         id={id}
         value={value}
+        disabled={disabled}
         onChange={(e) => onChange?.(e.target.value)}
         className={`w-full h-[48px] appearance-none rounded-[6px]  px-3 pr-12 text-[14px] outline-none  ${className}`}
       >
