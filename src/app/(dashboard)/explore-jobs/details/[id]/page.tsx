@@ -20,9 +20,9 @@ export default function Details({
   const [menuOpen, setMenuOpen] = useState(false);
   const toggleMenu = () => setMenuOpen((prev) => !prev);
 
-  const { applyForJob, getJobDetails } = useJob();
+  // ⬅️ Pull totalJobs from context
+  const { applyForJob, getJobDetails, totalJobs } = useJob();
 
-  const [selectedJob, setSelectedJob] = useState(Number(jobId));
   const [isApplying, setIsApplying] = useState(false);
   const [jobData, setJobData] = useState<Job | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -76,8 +76,10 @@ export default function Details({
               <h2 className="text-[20px] font-[600] text-[var(--black-white-1000)]">
                 All Jobs
               </h2>
+
+              {/* Show total job count here */}
               <p className="text-[20px] font-[400] pt-2 text-[var(--black-white-900)]">
-                10,000+ jobs
+                {totalJobs ?? 0} jobs
               </p>
             </div>
 
@@ -151,32 +153,10 @@ export default function Details({
                 disabled={isApplying}
               >
                 {isApplying ? "Applying..." : "Apply "}
-                <svg
-                  width="34"
-                  height="34"
-                  viewBox="0 0 34 34"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M18.3848 15.5898L10.3168 21.4981"
-                    stroke="white"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M21.1388 11.5875L19.9093 11.5442C17.9172 11.4742 16.9212 11.4392 16.5748 12.0415C16.2284 12.6438 16.7976 13.4211 17.936 14.9756L18.8356 16.2041C19.974 17.7586 20.5432 18.5359 21.222 18.3875C21.9008 18.239 22.1681 17.2789 22.7026 15.3586L23.0325 14.1734C23.3543 13.0172 23.5152 12.439 23.2266 12.0449C22.938 11.6508 22.3382 11.6296 21.1388 11.5875Z"
-                    stroke="white"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
               </button>
             </div>
 
-            {/* JOB DESCRIPTION COMPONENT (Dynamic) */}
+            {/* JOB DESCRIPTION */}
             <JobDescription jobData={jobData} />
           </div>
         </div>

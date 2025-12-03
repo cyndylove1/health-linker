@@ -121,10 +121,10 @@ export default function Details() {
             </div>
 
             <div className="flex items-center gap-[5px] py-2">
-              <p className="text-[16px] font-[700]">{job.salary}</p>
-              <h2 className="text-[12px] font-[500] text-[var(--black-white-700)]">
+              <p className="text-[14px] font-[700]">{job.salary}</p>
+              {/* <h2 className="text-[12px] font-[500] text-[var(--black-white-700)]">
                 per hour
-              </h2>
+              </h2> */}
             </div>
           </div>
           {/* Apply button */}

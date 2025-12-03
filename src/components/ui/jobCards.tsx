@@ -97,10 +97,13 @@ export default function JobCard({ job, hideIcon, icon, hideText }: JobProps) {
                     : "cursor-pointer"
                 }`}
               >
+                
                 {savedJobs.some((job) => job.id === item.id) ? (
                   <IoHeart size={20} className="text-white" />
                 ) : (
-                  <IoHeartOutline size={20} className="text-white" />
+                    <div className="bg-[#bbbbbb] w-[25px] h-[25px] rounded-full flex items-center justify-center">
+                <IoHeartOutline size={20} className="text-white" />
+              </div>
                 )}
               </button>
             )}
@@ -141,9 +144,9 @@ export default function JobCard({ job, hideIcon, icon, hideText }: JobProps) {
 
           <div className="flex items-center gap-[5px] py-2">
             <p className="text-[16px] font-[700]">{item.salary}</p>
-            <h2 className="text-[12px] font-[500] text-[var(--black-white-700)]">
+            {/* <h2 className="text-[12px] font-[500] text-[var(--black-white-700)]">
               per hour
-            </h2>
+            </h2> */}
           </div>
           {!hideText && (
             <div className="border-t-[1px] border-[var(--black-white-200)] text-[14px] font-[400] text-[var(--primary-1200)] pt-2">
