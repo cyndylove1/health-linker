@@ -21,6 +21,7 @@ export interface User {
   firstName: string;
   lastName: string;
   profilePicture?: string;
+  role?: string;
 }
 
 export interface RegisterData {
@@ -88,10 +89,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("token");
       const storedUser = localStorage.getItem("user");
+      console.log("Stored user from localStorage:", storedUser);
       if (token && storedUser) {
         try {
+          const parsedUser = JSON.parse(storedUser);
+          console.log("Parsed user object:", parsedUser);
+          console.log("User role from storage:", parsedUser?.role);
           setIsAuthenticated(true);
-          setUser(JSON.parse(storedUser));
+          setUser(parsedUser);
         } catch (error) {
           console.error("Error parsing stored user:", error);
           // Clear invalid data
@@ -259,13 +264,46 @@ export function AuthProvider({ children }: AuthProviderProps) {
     },
     onSuccess: (data) => {
       toast.success(data.message);
+      
+      // Debug: Log the response to see what we're getting
+      console.log("Login response:", data);
+      console.log("User object:", data.user);
+      console.log("User role:", data.user?.role);
+      console.log("User email:", data.user?.email);
+      
+      // Store everything in localStorage first
       if (typeof window !== "undefined") {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
+        
+        // Store admin flag for immediate checking
+        const userRole = data.user?.role;
+        const userEmail = data.user?.email;
+        const isAdmin = userRole === "admin" || userRole === "super_admin" || userEmail === "admin@healthlinker.com";
+        localStorage.setItem("isAdmin", String(isAdmin));
+        console.log("Setting isAdmin flag in localStorage:", isAdmin);
       }
+      
+      // Set state
       setUser(data.user);
       setIsAuthenticated(true);
-      router.push("/dashboard");
+      
+      // Redirect based on user role or email (fallback for admin)
+      const userRole = data.user?.role;
+      const userEmail = data.user?.email;
+      console.log("Redirecting user with role:", userRole, "email:", userEmail);
+      
+      // Check role first, then fallback to checking admin email
+      if (userRole === "admin" || userRole === "super_admin" || userEmail === "admin@healthlinker.com") {
+        console.log("🔴 ADMIN DETECTED - Redirecting to /admin/dashboard");
+        // Use window.location for a hard redirect to ensure it works
+        setTimeout(() => {
+          window.location.href = "/admin/dashboard";
+        }, 100);
+      } else {
+        console.log("Regular user - Redirecting to user dashboard");
+        router.push("/dashboard");
+      }
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message || "Login failed");
@@ -433,6 +471,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (typeof window !== "undefined") {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+      localStorage.removeItem("isAdmin");
     }
     setUser(null);
     setIsAuthenticated(false);

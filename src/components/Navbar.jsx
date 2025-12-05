@@ -6,16 +6,32 @@ import { usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useUser } from "@/context/userContext";
 import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const pathname = usePathname();
-  const { isAuthenticated, logout } = useAuth();
+  const router = useRouter();
+  const { isAuthenticated, logout, user } = useAuth();
   const { profile } = useUser();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   
   const menu = ["/", "/about", "/contact"];
   const activeIndex = menu.indexOf(pathname);
+
+  // Check if user is admin
+  const isAdmin = () => {
+    if (typeof window !== "undefined") {
+      const isAdminFlag = localStorage.getItem("isAdmin") === "true";
+      if (isAdminFlag) return true;
+    }
+    return user?.role === "admin" || user?.role === "super_admin" || user?.email === "admin@healthlinker.com";
+  };
+
+  // Get dashboard link based on role
+  const getDashboardLink = () => {
+    return isAdmin() ? "/admin/dashboard" : "/dashboard";
+  };
 
   // Get user display name
   const getUserDisplayName = () => {
@@ -123,11 +139,11 @@ export default function Navbar() {
                       )}
                     </div>
                     <Link
-                      href="/dashboard"
+                      href={getDashboardLink()}
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition"
                       onClick={() => setIsDropdownOpen(false)}
                     >
-                      Dashboard
+                      {isAdmin() ? "Admin Dashboard" : "Dashboard"}
                     </Link>
                     <Link
                       href="/profile"

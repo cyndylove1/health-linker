@@ -5,12 +5,22 @@ interface DeleteModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
+  title?: string;
+  message?: string;
+  isDeleting?: boolean;
 }
-export default function DeleteModal({ isOpen, onClose, onConfirm }: DeleteModalProps) {
-    if (!isOpen) return null;
+export default function DeleteModal({
+  isOpen,
+  onClose,
+  onConfirm,
+  title = "Are you sure?",
+  message = "You are about to delete this Job.",
+  isDeleting = false
+}: DeleteModalProps) {
+  if (!isOpen) return null;
   return (
-    <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-      <div className="bg-white w-[354px] rounded-[24px] p-6 relative leading-[100%] dm-font">
+    <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
+      <div className="bg-white w-full max-w-[354px] rounded-[24px] p-4 sm:p-6 relative leading-[100%] dm-font">
         {/* Close button */}
         <button
           onClick={onClose}
@@ -36,11 +46,10 @@ export default function DeleteModal({ isOpen, onClose, onConfirm }: DeleteModalP
         </div>
         <div className="text-center">
           <h2 className="text-[24px] font-[700] text-[var(--black-white-1000)]">
-            {/* Title */}
-            Are you sure?
+            {title}
           </h2>
           <p className="text-[16px] py-4 font-[400] text-[var(--black-white-900)]">
-            You are about to delete this Job.
+            {message}
           </p>
         </div>
 
@@ -55,10 +64,11 @@ export default function DeleteModal({ isOpen, onClose, onConfirm }: DeleteModalP
 
         <Btn
           className="h-[40px] w-full border-[1px] border-[var(--primary-1200)] bg-transparent hover:text-[#078e63] text-[var(--primary-1200)}] rounded-[100px] text-[16px]"
-          text="Delete"
+          text={isDeleting ? "Deleting..." : "Delete"}
           onClick={onConfirm}
+          disabled={isDeleting}
         />
       </div>
-    </div>
+    </div >
   );
 }

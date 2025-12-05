@@ -7,6 +7,10 @@ import { JobProvider } from "@/context/jobContext";
 import { UserProvider } from "@/context/userContext";
 import { NotificationProvider } from "@/context/notificationContext";
 import { RegistrationProvider } from "@/context/registrationContext";
+import { JobAlertProvider } from "@/context/jobAlertContext";
+import { AdminProvider } from "@/context/adminContext";
+import { AdminCategoryProvider } from "@/context/adminCategoryContext";
+import { AdminUserProvider } from "@/context/adminUserContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -20,7 +24,17 @@ export function Providers({ children }: { children: ReactNode }) {
                 <RegistrationProvider>
                     <UserProvider>
                         <JobProvider>
-                            <NotificationProvider>{children}</NotificationProvider>
+                            <NotificationProvider>
+                                <JobAlertProvider>
+                                    <AdminProvider>
+                                        <AdminCategoryProvider>
+                                            <AdminUserProvider>
+                                                {children}
+                                            </AdminUserProvider>
+                                        </AdminCategoryProvider>
+                                    </AdminProvider>
+                                </JobAlertProvider>
+                            </NotificationProvider>
                         </JobProvider>
                     </UserProvider>
                 </RegistrationProvider>
