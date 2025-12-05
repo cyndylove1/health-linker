@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Navbar from "../../components/Navbar.jsx";
+import Navbar from "../../components/Navbar.tsx";
 import Footer from "../../components/Footer.jsx";
 import { useState } from "react";
 import apiClient from "@/config/axiosConfig";
@@ -93,7 +93,7 @@ export default function ContactPage() {
       <Navbar />
 
       {/* MAIN CONTACT SECTION */}
-      <section className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+      <section className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
 
         {/* LEFT IMAGE */}
         <div className="rounded-lg overflow-hidden h-full">
@@ -186,7 +186,7 @@ export default function ContactPage() {
           </form>
 
           {/* CONTACT ICON ROW */}
-          <div className="flex items-center gap-6 mt-6 text-sm text-gray-600">
+          <div className="flex md:items-center items-start flex-col md:flex-row gap-6 mt-6 text-sm text-gray-600">
 
             <div className="flex items-center gap-2">
               <Image src="/location3.png" width={20} height={20} alt="loc" />

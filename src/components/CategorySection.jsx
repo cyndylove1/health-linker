@@ -17,7 +17,7 @@ function Card({ title, jobs, dark, slug }) {
 
   return (
     <div
-      className={`rounded-2xl ${chosen} text-white p-5 min-h-[110px] flex flex-col justify-between shadow-md`}
+      className={`rounded-2xl ${chosen} text-white p-6 min-h-[110px] flex flex-col justify-between shadow-md`}
       role="group"
     >
       <div>
