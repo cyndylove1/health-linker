@@ -12,7 +12,6 @@ export default function AboutPage() {
       <Navbar />
 
       {/* HERO SECTION */}
-      {/* HERO SECTION */}
       <section className="w-full relative">
         <Image
           src="/About1.png"
@@ -37,10 +36,19 @@ export default function AboutPage() {
         <div>
           <p className="text-sm text-gray-500 mb-1">Our Mission</p>
 
-          <h3 className="text-xl font-semibold mb-4">Empowering Healthcare Careers</h3>
+          <h3 className="text-xl font-semibold mb-4">
+            Empowering Healthcare Careers
+          </h3>
 
           <p className="text-sm text-gray-600 leading-relaxed">
-            HealthLinker is dedicated to connecting qualified healthcare professionals with rewarding career opportunities. We understand the unique challenges healthcare workers face in finding the right positions that match their expertise, values, and career goals. Our mission is to streamline the job search process for nurses, doctors, therapists, technicians, and other healthcare professionals, making it easier to find positions that make a real difference in people's lives.
+            HealthLinker is dedicated to connecting qualified healthcare
+            professionals with rewarding career opportunities. We understand the
+            unique challenges healthcare workers face in finding the right
+            positions that match their expertise, values, and career goals. Our
+            mission is to streamline the job search process for nurses, doctors,
+            therapists, technicians, and other healthcare professionals, making
+            it easier to find positions that make a real difference in people's
+            lives.
           </p>
         </div>
 
@@ -67,41 +75,48 @@ export default function AboutPage() {
         <div>
           <p className="text-sm text-gray-500 mb-1">Our Vision</p>
 
-          <h3 className="text-xl font-semibold mb-4">Building the Future of Healthcare Recruitment</h3>
+          <h3 className="text-xl font-semibold mb-4">
+            Building the Future of Healthcare Recruitment
+          </h3>
 
           <p className="text-sm text-gray-600 leading-relaxed">
-            We envision a world where healthcare professionals can easily discover meaningful employment opportunities that align with their skills and aspirations. By leveraging technology and deep industry knowledge, HealthLinker aims to be the leading platform for healthcare workforce solutions, bridging the gap between talented professionals and organizations that need them.
+            We envision a world where healthcare professionals can easily
+            discover meaningful employment opportunities that align with their
+            skills and aspirations. By leveraging technology and deep industry
+            knowledge, HealthLinker aims to be the leading platform for
+            healthcare workforce solutions, bridging the gap between talented
+            professionals and organizations that need them.
           </p>
         </div>
       </section>
 
-
       {/* YOUTUBE SECTION */}
       <section
-  className="w-full py-18 text-center bg-cover bg-center"
-  style={{
-    background:
-      "linear-gradient(180deg, #1C9D75 0%, #0A7160 45%, #054037 100%)",
-  }}
->
-  <h2 className="text-white text-3xl md:text-5xl font-semibold mb-2">
-    Why Choose HealthLinker?
-  </h2>
+        className="w-full py-18 text-center bg-cover bg-center"
+        style={{
+          background:
+            "linear-gradient(180deg, #1C9D75 0%, #0A7160 45%, #054037 100%)",
+        }}
+      >
+        <h2 className="text-white text-3xl md:text-5xl font-semibold mb-2">
+          Why Choose HealthLinker?
+        </h2>
 
-  <p className="text-white/80 text-m mb-[-50px]">
-    Learn why thousands of healthcare professionals trust HealthLinker for their career growth.
-  </p>
+        <p className="text-white/80 text-m mb-[-50px]">
+          Learn why thousands of healthcare professionals trust HealthLinker for
+          their career growth.
+        </p>
 
-  <div className="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-[20_100px_300px_rgba(0,0,0,0.15)]">
-    <Image
-      src="/Player.png"
-      alt="YouTube Video Thumbnail"
-      width={1600}
-      height={900}
-      className="w-full h-auto object-contain"
-    />
-  </div>
-</section>
+        <div className="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-[20_100px_300px_rgba(0,0,0,0.15)]">
+          <Image
+            src="/Player.png"
+            alt="YouTube Video Thumbnail"
+            width={1600}
+            height={900}
+            className="w-full h-auto object-contain"
+          />
+        </div>
+      </section>
 
       {/* FOOTER */}
       <Footer />
