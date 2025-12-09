@@ -7,7 +7,7 @@ export default function Footer() {
   return (
     <footer className="w-full bg-white text-gray-700">
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
           {/* LEFT: Logo + About + Social + Contact */}
           <div className="md:col-span-5 lg:col-span-4 space-y-6">
