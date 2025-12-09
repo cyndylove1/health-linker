@@ -6,11 +6,11 @@ export default function HeroSection() {
     <div className="w-full flex flex-col lg:flex-row gap-6 md:p-6 px-4 dm-font mt-10">
       {/* LEFT CARD */}
       <div className="flex-1 bg-gradient-to-br from-[#1C9D75] to-[#0A3729] rounded-xl md:p-10 p-4 text-white shadow-xl relative w-full h-[600px]">
-        <h1 className="text-[60px] font-[600] leading-[100%]">
+        <div className="text-[60px] font-[600] leading-[100%]">
           <h2 className="text-white/70">Discover.</h2>
           <h3 className="text-white/85">Search.</h3>
           <h4>Get a job.</h4>
-        </h1>
+        </div>
 
         <p className="mt-4 text-white max-w-lg text-[16px] font-[400] leading-[100%]">
           Great platform for job seekers that searching for new career heights

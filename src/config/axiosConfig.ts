@@ -10,6 +10,7 @@ const apiClient = axios.create({
     Accept: "application/json",
   },
   timeout: 10000, // 10 second timeout
+  withCredentials: true, // Always send cookies for Sanctum
 });
 
 // Setup interceptors

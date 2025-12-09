@@ -268,10 +268,10 @@ export default function PublicJobDetailsPage({ params }: { params: Promise<{ id:
       </section>
 
       {/* MAIN CONTENT */}
-      <section className="max-w-7xl mx-auto px-6 mt-8 mb-20 flex gap-6">
+      <section className="max-w-7xl mx-auto px-4 mt-8 mb-20 flex flex-col lg:flex-row gap-6">
 
         {/* LEFT SECTION — JOB DESCRIPTION */}
-        <div className="flex-1 bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+        <div className="flex-1 bg-white rounded-xl border border-gray-200 shadow-sm p-4 sm:p-6 mb-6 lg:mb-0">
 
           {/* Job Title + Company */}
           <h1 className="text-2xl font-bold text-gray-900">{currentJob.title}</h1>
@@ -363,7 +363,7 @@ export default function PublicJobDetailsPage({ params }: { params: Promise<{ id:
         </div>
 
         {/* RIGHT SECTION — RELATED JOBS */}
-        <div className="w-[320px] flex-shrink-0 bg-white border border-gray-200 rounded-xl shadow-sm p-4">
+        <div className="w-full lg:w-[320px] flex-shrink-0 bg-white border border-gray-200 rounded-xl shadow-sm p-4">
           <h3 className="text-lg font-semibold mb-4">Related Jobs</h3>
 
           {[1, 2, 3, 4, 5, 6].map((job) => (
