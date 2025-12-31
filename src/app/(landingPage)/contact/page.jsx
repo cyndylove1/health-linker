@@ -1,11 +1,11 @@
 "use client";
-
-import Image from "next/image";
-import Navbar from "../../components/Navbar.tsx";
-import Footer from "../../components/Footer.jsx";
 import { useState } from "react";
 import apiClient from "@/config/axiosConfig";
 import { toast } from "react-toastify";
+import Image from "next/image";
+import Navbar from "../../components/Navbar.tsx";
+import Footer from "@/components/Footer.jsx";
+
 
 export default function ContactPage() {
   const [isLoading, setIsLoading] = useState(false);
