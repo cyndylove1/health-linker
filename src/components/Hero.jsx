@@ -1,3 +1,4 @@
+'use client';
 import { FiSearch } from "react-icons/fi";
 import Btn from "./button/btn";
 import Image from "next/image";

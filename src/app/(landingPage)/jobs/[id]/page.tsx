@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import Navbar from "../../../components/Navbar";
-import Footer from "../../../components/Footer";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import Link from "next/link";
 import { useState, useEffect, use } from "react";
 import { useJob } from "@/context/jobContext";

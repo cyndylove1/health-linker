@@ -66,7 +66,7 @@ export const AdminCategoryProvider: React.FC<{ children: React.ReactNode }> = ({
     queryKey: ["categories"],
     queryFn: async () => {
       const response = await apiClient.get("/api/categories");
-      console.log("Categories API response:", response.data);
+      // console.log("Categories API response:", response.data);
       return response.data;
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -164,7 +164,7 @@ export const AdminCategoryProvider: React.FC<{ children: React.ReactNode }> = ({
   // Handle different response structures from backend
   const categories = categoriesData?.data || categoriesData?.categories || categoriesData || [];
   
-  console.log("Processed categories:", categories);
+  // console.log("Processed categories:", categories);
   
   const value: AdminCategoryContextType = {
     categories: Array.isArray(categories) ? categories : [],

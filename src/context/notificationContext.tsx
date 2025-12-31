@@ -35,7 +35,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
                 const response = await apiClient.get("/api/notifications");
                 return response.data;
             } catch (error) {
-                console.log("Notifications not available");
+                // console.log("Notifications not available");
                 return { data: [] };
             }
         },

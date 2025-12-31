@@ -2,8 +2,8 @@
 import { useState, useEffect, Suspense } from "react";
 import Image from "next/image";
 import { useSearchParams, useRouter } from "next/navigation";
-import Navbar from "../../components/Navbar.tsx";
-import Footer from "../../components/Footer.jsx";
+import Navbar from "@/components/Navbar.tsx";
+import Footer from "@/components/Footer.jsx";
 import { useJob } from "@/context/jobContext";
 import Link from "next/link";
 
