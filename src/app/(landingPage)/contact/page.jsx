@@ -3,7 +3,7 @@ import { useState } from "react";
 import apiClient from "@/config/axiosConfig";
 import { toast } from "react-toastify";
 import Image from "next/image";
-import Navbar from "../../components/Navbar.tsx";
+import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer.jsx";
 
 

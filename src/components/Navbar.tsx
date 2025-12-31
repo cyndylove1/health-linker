@@ -30,7 +30,7 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Node | null; // safe cast
+      const target = event.target as Node | null; 
 
       if (
         dropdownRef.current &&
